@@ -7,12 +7,13 @@
 </head>
 
 <body>
-  <h1>プレーヤー名を入力してください</h1>
+  <h1>プレーヤー名とパスワードを入力してください</h1>
   <div th:if="${error}">
     [[${error}]] はすでに使用されています
   </div>
   <form action="/player" method="get">
-    <input type="text" name="playername">
+    <input type="text" name="playername"><br />
+    <input type="text" name="psswd">
     <button type="submit">次へ</button>
   </form>
 </body>

@@ -24,11 +24,13 @@ public class PlayerController {
 
   // プレイヤー情報を表示するページ
   @GetMapping("/player")
-  public String player(@RequestParam("playername") String playername, Model model) {
+  public String player(@RequestParam("playername") String playername, @RequestParam("psswd") String psswd,
+      Model model) {
     // プレイヤー名をデータベースに保存
     if (userInfoMapper.selectByName(playername) == null) {
       UserInfo userInfo = new UserInfo();
       userInfo.setUserName(playername);
+      userInfo.setPsswd(psswd);
       userInfoMapper.insertUserInfo(userInfo);
     } else {
       model.addAttribute("error", playername);
