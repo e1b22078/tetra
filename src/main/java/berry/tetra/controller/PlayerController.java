@@ -32,7 +32,7 @@ public class PlayerController {
       userInfo.setUserName(playername);
       userInfo.setPsswd(psswd);
       userInfoMapper.insertUserInfo(userInfo);
-    } else {
+    } else if(userInfoMapper.selectByNamePsswd(playername, psswd) == null){
       model.addAttribute("error", playername);
       return "name.html";
     }
