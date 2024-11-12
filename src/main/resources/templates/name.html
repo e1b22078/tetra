@@ -8,6 +8,9 @@
 
 <body>
   <h1>プレーヤー名を入力してください</h1>
+  <div th:if="${error}">
+    [[${error}]] はすでに使用されています
+  </div>
   <form action="/player" method="get">
     <input type="text" name="playername">
     <button type="submit">次へ</button>
