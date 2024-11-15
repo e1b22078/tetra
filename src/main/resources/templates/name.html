@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
@@ -11,9 +11,14 @@
   <div th:if="${error}">
     [[${error}]] はすでに使用されています
   </div>
-  <form action="/player" method="get">
+  <form action="/player" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+    <label for="playername">プレイヤー名:</label>
     <input type="text" name="playername"><br />
-    <input type="text" name="psswd">
+
+    <label for="pass">パスワード(6文字以上で入力してください):</label>
+    <input type="password" name="psswd" minlength="6" required />
+
     <button type="submit">次へ</button>
   </form>
 </body>
