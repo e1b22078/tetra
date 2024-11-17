@@ -31,8 +31,9 @@ public class PlayerController {
       UserInfo userInfo = new UserInfo();
       userInfo.setUserName(playername);
       userInfo.setPsswd(psswd);
+      userInfo.setRoomId(0);
       userInfoMapper.insertUserInfo(userInfo);
-    } else if(userInfoMapper.selectByNamePsswd(playername, psswd) == null){
+    } else if (userInfoMapper.selectByNamePsswd(playername, psswd) == null) {
       model.addAttribute("error", playername);
       return "name.html";
     }
@@ -45,5 +46,21 @@ public class PlayerController {
     model.addAttribute("allUsers", allUsers);
 
     return "player.html";
+  }
+
+  @GetMapping("/qmatch")
+  public String qmatch(@RequestParam("playername") String playername, Model model) {
+    int roomId, countRoomId;
+    UserInfo userInfo = userInfoMapper.selectByName(playername);
+    roomId = userInfoMapper.selectMaxRoomId();
+    countRoomId = userInfoMapper.selectCountRoomId(roomId);
+
+    if (countRoomId == 5 || roomId == 0) {
+      roomId = roomId + 1;
+    }
+    userInfo.setRoomId(roomId);
+    userInfoMapper.insertRoomId(userInfo);
+
+    return "room.html";
   }
 }

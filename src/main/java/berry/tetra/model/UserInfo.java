@@ -4,6 +4,15 @@ public class UserInfo {
   int id;
   String userName;
   String psswd;
+  int roomId;
+
+  public int getRoomId() {
+    return roomId;
+  }
+
+  public void setRoomId(int roomId) {
+    this.roomId = roomId;
+  }
 
   public String getPsswd() {
     return psswd;
