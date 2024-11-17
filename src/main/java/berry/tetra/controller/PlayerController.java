@@ -4,6 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import berry.tetra.model.UserInfo;
@@ -16,6 +18,12 @@ public class PlayerController {
   @Autowired
   UserInfoMapper userInfoMapper;
 
+  @RequestMapping("/name")
+  public String showLoginForm(Model model) {
+    // ログイン画面へ遷移。
+    return "name";
+  }
+
   // 名前入力ページへのGETリクエスト
   @GetMapping("/name")
   public String name() {
@@ -23,7 +31,7 @@ public class PlayerController {
   }
 
   // プレイヤー情報を表示するページ
-  @GetMapping("/player")
+  @PostMapping("/player")
   public String player(@RequestParam("playername") String playername, @RequestParam("psswd") String psswd,
       Model model) {
     // プレイヤー名をデータベースに保存

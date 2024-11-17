@@ -44,4 +44,5 @@ public class TetraAuthConfiguration {
     // 生成したユーザをImMemoryUserDetailsManagerに渡す
     return new InMemoryUserDetailsManager(admin);
   }
+
 }
