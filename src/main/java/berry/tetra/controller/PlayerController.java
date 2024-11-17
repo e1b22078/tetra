@@ -1,11 +1,11 @@
 package berry.tetra.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import berry.tetra.model.UserInfo;
@@ -18,8 +18,11 @@ public class PlayerController {
   @Autowired
   UserInfoMapper userInfoMapper;
 
-  @Autowired
-  private PasswordEncoder passwordEncoder;
+  @RequestMapping("/name")
+  public String showLoginForm(Model model) {
+    // ログイン画面へ遷移。
+    return "name";
+  }
 
   // 名前入力ページへのGETリクエスト
   @GetMapping("/name")
@@ -31,12 +34,11 @@ public class PlayerController {
   @PostMapping("/player")
   public String player(@RequestParam("playername") String playername, @RequestParam("psswd") String psswd,
       Model model) {
-    String hashedPsswd = passwordEncoder.encode(psswd);
     // プレイヤー名をデータベースに保存
     if (userInfoMapper.selectByName(playername) == null) {
       UserInfo userInfo = new UserInfo();
       userInfo.setUserName(playername);
-      userInfo.setPsswd(hashedPsswd);
+      userInfo.setPsswd(psswd);
       userInfoMapper.insertUserInfo(userInfo);
     } else if (userInfoMapper.selectByNamePsswd(playername, psswd) == null) {
       model.addAttribute("error", playername);

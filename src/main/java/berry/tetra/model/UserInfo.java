@@ -5,14 +5,6 @@ public class UserInfo {
   String userName;
   String psswd;
 
-  public String getPsswd() {
-    return psswd;
-  }
-
-  public void setPsswd(String psswd) {
-    this.psswd = psswd;
-  }
-
   // Thymeleafでフィールドを扱うためにはgetter/setterが必ず必要
   // vscodeのソースコード右クリック->ソースアクションでsetter/getterを簡単に追加できる
   public String getUserName() {
@@ -29,6 +21,14 @@ public class UserInfo {
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  public String getPsswd() {
+    return psswd;
+  }
+
+  public void setPsswd(String psswd) {
+    this.psswd = psswd;
   }
 
 }
