@@ -1,14 +1,91 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 
 <head>
   <meta charset="utf-8">
-  <title>Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>管理者ページ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid black;
+    }
+
+    th,
+    td {
+      padding: 8px 12px;
+      text-align: left;
+    }
+
+    button {
+      padding: 5px 10px;
+      background-color: red;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: darkred;
+    }
+
+    .container {
+      width: 80%;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+    }
+  </style>
 </head>
 
 <body>
-  <h1>hello admin</h1>
-  <a href="/logout">ログアウト</a>
+  <div class="container">
+    <h1>管理者ページ</h1>
+    <p><a href="/logout">ログアウト</a></p>
+
+    <h2>ユーザー一覧</h2>
+
+    <!-- ユーザー一覧のテーブル -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>ユーザー名</th>
+          <th>ルームID</th>
+          <th>アクション</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- ユーザー情報を動的に表示 -->
+        <tr th:each="user : ${users}">
+          <td th:text="${user.id}"></td>
+          <td th:text="${user.userName}"></td>
+          <td th:text="${user.roomId}"></td>
+          <td>
+            <!-- 削除ボタン -->
+            <form th:action="@{/admin/delete/{id}(id=${user.id})}" method="post"
+              onsubmit="return confirm('本当にこのユーザーを削除しますか？');">
+              <input type="hidden" name="_method" value="delete" />
+              <button type="submit">削除</button>
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </body>
 
 </html>
