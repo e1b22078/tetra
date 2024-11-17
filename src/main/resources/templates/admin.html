@@ -7,8 +7,30 @@
 </head>
 
 <body>
-  <h1>hello admin</h1>
+  <h1>Hello Admin</h1>
   <a href="/logout">ログアウト</a>
+
+  <h2>ユーザー一覧</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>ユーザー名</th>
+        <th>アクション</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- ユーザー情報をリスト表示 -->
+      <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.userName}"></td>
+        <td>
+          <!-- 削除ボタン -->
+          <a th:href="@{'/admin/delete/' + ${user.id}}" onclick="return confirm('本当に削除しますか？')">削除</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
 </body>
 
 </html>
