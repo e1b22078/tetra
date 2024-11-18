@@ -1,6 +1,7 @@
 package berry.tetra.model;
 
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
@@ -32,4 +33,7 @@ public interface UserInfoMapper {
 
   @Update("UPDATE userinfo SET roomId=#{roomId} WHERE ID = #{id}")
   void insertRoomId(UserInfo userInfo);
+
+  @Delete("DELETE FROM userinfo WHERE id = #{id}")
+    void deleteUserById(int id);
 }
