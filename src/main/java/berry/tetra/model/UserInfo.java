@@ -3,7 +3,6 @@ package berry.tetra.model;
 public class UserInfo {
   int id;
   String userName;
-  String psswd;
   int roomId;
 
   public int getRoomId() {
@@ -14,8 +13,6 @@ public class UserInfo {
     this.roomId = roomId;
   }
 
-  // Thymeleafでフィールドを扱うためにはgetter/setterが必ず必要
-  // vscodeのソースコード右クリック->ソースアクションでsetter/getterを簡単に追加できる
   public String getUserName() {
     return userName;
   }
@@ -31,13 +28,4 @@ public class UserInfo {
   public void setId(int id) {
     this.id = id;
   }
-
-  public String getPsswd() {
-    return psswd;
-  }
-
-  public void setPsswd(String psswd) {
-    this.psswd = psswd;
-  }
-
 }

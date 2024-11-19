@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-import java.util.List;
+import java.util.ArrayList;
 
 @Mapper
 public interface UserInfoMapper {
@@ -22,12 +22,9 @@ public interface UserInfoMapper {
   int selectCountRoomId(int roomId);
 
   @Select("SELECT id, userName FROM userinfo") // すべてのユーザー情報を取得するSQL
-  List<UserInfo> selectAllUsers(); // すべてのユーザーを返すメソッド
+  ArrayList<UserInfo> selectAllUsers(); // すべてのユーザーを返すメソッド
 
-  @Select("SELECT id, userName FROM userinfo WHERE userName = #{userName} AND psswd = #{psswd}")
-  UserInfo selectByNamePsswd(String userName, String psswd);
-
-  @Insert("INSERT INTO userinfo (userName, psswd, roomId) VALUES (#{userName}, #{psswd}, #{roomId});")
+  @Insert("INSERT INTO userinfo (userName, roomId) VALUES (#{userName}, #{roomId});")
   @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
   void insertUserInfo(UserInfo userInfo);
 
