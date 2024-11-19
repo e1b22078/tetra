@@ -18,12 +18,6 @@ public class PlayerController {
   @Autowired
   UserInfoMapper userInfoMapper;
 
-  @RequestMapping("/name")
-  public String showLoginForm(Model model) {
-    // ログイン画面へ遷移。
-    return "name";
-  }
-
   // 名前入力ページへのGETリクエスト
   @GetMapping("/name")
   public String name() {
@@ -32,19 +26,13 @@ public class PlayerController {
 
   // プレイヤー情報を表示するページ
   @PostMapping("/player")
-  public String player(@RequestParam("playername") String playername, @RequestParam("psswd") String psswd,
+  public String player(@RequestParam("playername") String playername,
       Model model) {
     // プレイヤー名をデータベースに保存
-    if (userInfoMapper.selectByName(playername) == null) {
       UserInfo userInfo = new UserInfo();
       userInfo.setUserName(playername);
-      userInfo.setPsswd(psswd);
       userInfo.setRoomId(0);
       userInfoMapper.insertUserInfo(userInfo);
-    } else if (userInfoMapper.selectByNamePsswd(playername, psswd) == null) {
-      model.addAttribute("error", playername);
-      return "name.html";
-    }
 
     // 登録されている全ユーザー情報を取得
     List<UserInfo> allUsers = userInfoMapper.selectAllUsers();
