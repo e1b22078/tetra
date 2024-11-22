@@ -53,4 +53,14 @@ public class PlayerController {
     model.addAttribute("room", room);
     return "room.html";
   }
+
+  @GetMapping("/player")
+  public String playerPage() {
+    return "player";
+  }
+
+  @GetMapping("/game")
+  public String game() {
+    return "game.html";
+  }
 }

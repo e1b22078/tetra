@@ -11,7 +11,7 @@
   <form action="/player" method="post">
     <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
     <label for="playername">プレイヤー名:</label>
-    <input type="text" name="playername"><br />
+    <input type="text" name="playername" required /><br />
     <button type="submit">次へ</button>
   </form>
 </body>

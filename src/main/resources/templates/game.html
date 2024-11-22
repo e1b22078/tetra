@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>英単語クイズ</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .quiz-container {
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .options button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 16px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .options button:hover {
+      background: #0056b3;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+  </style>
+  <script>
+    let currentQuestion = 0; // 現在の問題数
+    const totalQuestions = 10; // 合計問題数
+    let correctCount = 0; // 正解数
+
+    async function fetchQuiz() {
+      try {
+        // APIからクイズデータを取得
+        const response = await fetch('/api/quiz');
+        const quiz = await response.json();
+
+        // クイズデータをページに表示
+        document.getElementById('word').textContent = quiz.word;
+        const optionsContainer = document.getElementById('options');
+        optionsContainer.innerHTML = ''; // 選択肢をクリア
+
+        quiz.options.forEach(option => {
+          const button = document.createElement('button');
+          button.textContent = option;
+          button.onclick = () => checkAnswer(option, quiz.correctMean);
+          optionsContainer.appendChild(button);
+        });
+      } catch (error) {
+        console.error('クイズの取得中にエラーが発生しました:', error);
+        document.getElementById('quiz-container').innerHTML = 'エラーが発生しました。リロードしてください。';
+      }
+    }
+
+    function checkAnswer(selected, correct) {
+      const result = document.getElementById('result');
+      if (selected === correct) {
+        correctCount++;
+        result.textContent = '正解！🎉';
+        result.style.color = 'green';
+      } else {
+        result.textContent = `不正解。正解は「${correct}」です。`;
+        result.style.color = 'red';
+      }
+
+      currentQuestion++;
+
+      // 次のクイズまたは結果表示
+      const nextButton = document.getElementById('next-button');
+      if (currentQuestion < totalQuestions) {
+        nextButton.textContent = '次の問題';
+        nextButton.style.display = 'block';
+      } else {
+        nextButton.textContent = '結果を見る';
+        nextButton.style.display = 'block';
+      }
+    }
+
+    function loadNextQuiz() {
+      const result = document.getElementById('result');
+      const nextButton = document.getElementById('next-button');
+
+      // 結果を表示する場合
+      if (currentQuestion >= totalQuestions) {
+        document.getElementById('quiz-container').innerHTML = `
+          <h2>クイズ終了！</h2>
+          <p>あなたの結果は、${totalQuestions}問中${correctCount}問正解です。</p>
+        `;
+        return;
+      }
+
+      // 次の問題へ
+      result.textContent = '';
+      nextButton.style.display = 'none';
+      fetchQuiz();
+    }
+
+    // ページ読み込み時に最初のクイズを取得
+    window.onload = fetchQuiz;
+  </script>
+</head>
+
+<body>
+  <h1>クイズゲーム</h1>
+  <div id="quiz-container" class="quiz-container">
+    <p>英単語: <span id="word"></span></p>
+    <div id="options" class="options"></div>
+    <p id="result" class="result"></p>
+    <button id="next-button" onclick="loadNextQuiz()" style="display:none;">次の問題</button>
+  </div>
+  <center>
+    <a href="/player" class="back-link">もどる</a>
+  </center>
+</body>
+
+</html>
