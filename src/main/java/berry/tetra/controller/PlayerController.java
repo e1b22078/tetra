@@ -6,6 +6,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import berry.tetra.model.UserInfo;
 import berry.tetra.model.UserInfoMapper;
@@ -17,6 +20,9 @@ public class PlayerController {
 
   @Autowired
   UserInfoMapper userInfoMapper;
+
+  @Autowired
+  private SimpMessagingTemplate messagingTemplate;
 
   @Autowired
   Room room;
@@ -37,12 +43,18 @@ public class PlayerController {
     userInfo.setRoomId(0);
     userInfoMapper.insertUserInfo(userInfo);
 
+    // rooomにユーザを追加
+    room.addUser(playername);
+
     // 登録されている全ユーザー情報を取得
     List<UserInfo> allUsers = userInfoMapper.selectAllUsers();
+    model.addAttribute("allUsers", allUsers);
 
     // モデルにプレイヤー名とユーザーリストを追加
     model.addAttribute("playername", playername);
-    model.addAttribute("allUsers", allUsers);
+
+    // サーバからクライアントにユーザ一覧を送信
+    messagingTemplate.convertAndSend("/topic/users", room.getUsers());
 
     return "player.html";
   }
