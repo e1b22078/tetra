@@ -6,8 +6,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import berry.tetra.model.UserInfo;
@@ -47,8 +45,7 @@ public class PlayerController {
     room.addUser(playername);
 
     // 登録されている全ユーザー情報を取得
-    List<UserInfo> allUsers = userInfoMapper.selectAllUsers();
-    model.addAttribute("allUsers", allUsers);
+    model.addAttribute("users", room.getUsers());
 
     // モデルにプレイヤー名とユーザーリストを追加
     model.addAttribute("playername", playername);

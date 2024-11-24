@@ -4,15 +4,24 @@
 <head>
   <meta charset="utf-8">
   <title>Player</title>
+  <script src="/webjars/jquery/jquery.min.js"></script>
+  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+  <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+  <script src="player.js"></script>
 </head>
 
 <body>
   <h1>hello <span th:text="${playername}"></span></h1>
   <a th:href="@{/qmatch(playername=${playername})}">クイックマッチ</a><br>
   <h2>登録されているユーザー一覧:</h2>
-  <ul>
-    <li th:each="user : ${allUsers}" th:text="${user.userName}"></li>
-  </ul>
+  <table>
+    <tbody id="message">
+      <tr th:each="user:${users}">
+        <td th:text="${user}">
+        </td>
+      </tr>
+    </tbody>
+  </table>
   <a href="/game">ゲーム</a></br>
   <a href="/logout">ログアウト</a>
 </body>
