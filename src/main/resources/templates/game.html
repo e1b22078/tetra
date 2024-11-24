@@ -47,11 +47,35 @@
       font-size: 18px;
       font-weight: bold;
     }
+
+    #answer {
+      display: none;
+      font-size: 20px;
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    #next-button {
+      display: none;
+      margin-top: 20px;
+      font-size: 16px;
+      padding: 10px;
+      background: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #next-button:hover {
+      background: #0056b3;
+    }
   </style>
   <script>
     let currentQuestion = 0; // 現在の問題数
     const totalQuestions = 10; // 合計問題数
     let correctCount = 0; // 正解数
+    let timeoutId; // setTimeout の ID を保持する変数
 
     async function fetchQuiz() {
       try {
@@ -70,6 +94,16 @@
           button.onclick = () => checkAnswer(option, quiz.correctMean);
           optionsContainer.appendChild(button);
         });
+
+        // 5秒後に答えを表示し、次の問題へ進むボタンを表示
+        timeoutId = setTimeout(() => {
+          document.getElementById('answer').textContent = `答えは: ${quiz.correctMean}`;
+          document.getElementById('answer').style.display = 'block';
+
+          // 次の問題へ進むボタンを表示
+          document.getElementById('next-button').style.display = 'block';
+        }, 5000);  // 5秒後
+
       } catch (error) {
         console.error('クイズの取得中にエラーが発生しました:', error);
         document.getElementById('quiz-container').innerHTML = 'エラーが発生しました。リロードしてください。';
@@ -78,6 +112,8 @@
 
     function checkAnswer(selected, correct) {
       const result = document.getElementById('result');
+      clearTimeout(timeoutId); // 解答ボタンが押された時点でタイマーをクリア
+
       if (selected === correct) {
         correctCount++;
         result.textContent = '正解！🎉';
@@ -87,22 +123,17 @@
         result.style.color = 'red';
       }
 
-      currentQuestion++;
-
-      // 次のクイズまたは結果表示
-      const nextButton = document.getElementById('next-button');
-      if (currentQuestion < totalQuestions) {
-        nextButton.textContent = '次の問題';
-        nextButton.style.display = 'block';
-      } else {
-        nextButton.textContent = '結果を見る';
-        nextButton.style.display = 'block';
-      }
+      // 次のクイズへ進むボタンを表示
+      document.getElementById('next-button').style.display = 'block';
     }
 
     function loadNextQuiz() {
       const result = document.getElementById('result');
       const nextButton = document.getElementById('next-button');
+
+      // 次の問題に進む前に前回の答えを非表示にする
+      document.getElementById('answer').style.display = 'none';
+      result.textContent = ''; // 前回の結果をクリア
 
       // 結果を表示する場合
       if (currentQuestion >= totalQuestions) {
@@ -114,9 +145,9 @@
       }
 
       // 次の問題へ
-      result.textContent = '';
-      nextButton.style.display = 'none';
       fetchQuiz();
+      // 次の問題へ進むボタンを非表示にする
+      nextButton.style.display = 'none';
     }
 
     // ページ読み込み時に最初のクイズを取得
@@ -130,7 +161,8 @@
     <p>英単語: <span id="word"></span></p>
     <div id="options" class="options"></div>
     <p id="result" class="result"></p>
-    <button id="next-button" onclick="loadNextQuiz()" style="display:none;">次の問題</button>
+    <p id="answer"></p> <!-- 答え表示エリア -->
+    <button id="next-button" onclick="loadNextQuiz()">次の問題</button>
   </div>
   <center>
     <a href="/player" class="back-link">もどる</a>
