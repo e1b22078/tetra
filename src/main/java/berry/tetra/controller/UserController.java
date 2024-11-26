@@ -14,12 +14,12 @@ import berry.tetra.model.UserInfoMapper;
 @RequestMapping("/api/user")
 public class UserController {
 
-@Autowired
-UserInfoMapper userInfoMapper;
+  @Autowired
+  UserInfoMapper userInfoMapper;
 
-@GetMapping
-public List<UserInfo> getUserInfo(){
-  return userInfoMapper.selectAllUsers();
-}
+  @GetMapping
+  public List<UserInfo> getUserInfo() {
+    return userInfoMapper.selectAllUsers();
+  }
 
 }

@@ -14,3 +14,7 @@ function showMessage(message) {
     $("#message").append("<tr><td>" + message[i]["userName"] + "</td></tr>")
   }
 }
+
+fetch('/api/user')
+  .then(response => { return response.json() })
+  .then(result => { showMessage(result) });
