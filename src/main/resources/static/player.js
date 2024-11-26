@@ -11,6 +11,6 @@ stompClient.connect({}, () => {
 function showMessage(message) {
   $("#message").html("");
   for (var i in message) {
-    $("#message").append("<tr><td>" + message[i] + "</td></tr>")
+    $("#message").append("<tr><td>" + message[i]["userName"] + "</td></tr>")
   }
 }
