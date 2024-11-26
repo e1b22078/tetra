@@ -10,8 +10,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import berry.tetra.model.UserInfo;
 import berry.tetra.model.UserInfoMapper;
-import berry.tetra.model.Room;
-import java.util.List;
 
 @Controller
 public class PlayerController {
@@ -21,9 +19,6 @@ public class PlayerController {
 
   @Autowired
   private SimpMessagingTemplate messagingTemplate;
-
-  @Autowired
-  Room room;
 
   // 名前入力ページへのGETリクエスト
   @GetMapping("/name")
@@ -41,25 +36,17 @@ public class PlayerController {
     userInfo.setRoomId(0);
     userInfoMapper.insertUserInfo(userInfo);
 
-    // rooomにユーザを追加
-    room.addUser(playername);
-
-    // 登録されている全ユーザー情報を取得
-    model.addAttribute("users", room.getUsers());
-
     // モデルにプレイヤー名とユーザーリストを追加
     model.addAttribute("playername", playername);
 
     // サーバからクライアントにユーザ一覧を送信
-    messagingTemplate.convertAndSend("/topic/users", room.getUsers());
+    messagingTemplate.convertAndSend("/topic/users", userInfoMapper.selectAllUsers());
 
     return "player.html";
   }
 
   @GetMapping("/qmatch")
   public String qmatch(@RequestParam("playername") String playername, Model model) {
-    room.addUser(playername);
-    model.addAttribute("room", room);
     return "room.html";
   }
 
