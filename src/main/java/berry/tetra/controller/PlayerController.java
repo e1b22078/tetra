@@ -52,7 +52,9 @@ public class PlayerController {
 
   @GetMapping("/player")
   public String playerPage() {
-    return "player";
+    // サーバからクライアントにユーザ一覧を送信
+    messagingTemplate.convertAndSend("/topic/users", userInfoMapper.selectAllUsers());
+    return "player.html";
   }
 
   @GetMapping("/game")

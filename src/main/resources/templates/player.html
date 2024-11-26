@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  <h1>hello <span th:text="${playername}"></span></h1>
+  <h1><span th:if="${playername}">hello [[${playername}]]</span></h1>
   <a th:href="@{/qmatch(playername=${playername})}">クイックマッチ</a><br>
   <h2>登録されているユーザー一覧:</h2>
   <table>
