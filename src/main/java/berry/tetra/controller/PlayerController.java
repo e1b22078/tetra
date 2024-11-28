@@ -1,5 +1,7 @@
 package berry.tetra.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -47,7 +49,8 @@ public class PlayerController {
 
   @GetMapping("/qmatch")
   public String qmatch(@RequestParam("playername") String playername, Model model) {
-    UserInfo userInfo = userInfoMapper.selectByName(playername);
+    List<UserInfo> userInfos = userInfoMapper.selectAllByName(playername);
+    UserInfo userInfo = userInfos.get(0);
     int roomid = 1;
     int roomlimit = 2;
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
