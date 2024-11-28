@@ -12,8 +12,8 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper {
 
-  @Select("SELECT id, userName, roomId FROM userinfo WHERE userName = #{userName}")
-  UserInfo selectByName(String userName);
+  @Select("SELECT * FROM userinfo WHERE userName = #{userName} AND roomId = 0")
+  UserInfo selectByName(String userName);// 引数のusernameかつroomIdが0のUserInfoを返す
 
   @Select("SELECT MAX(roomId) FROM userinfo")
   int selectMaxRoomId();
@@ -21,7 +21,7 @@ public interface UserInfoMapper {
   @Select("SELECT COUNT(*) FROM userinfo WHERE roomId = #{roomId}")
   int selectCountRoomId(int roomId);
 
-  @Select("SELECT id, userName FROM userinfo") // すべてのユーザー情報を取得するSQL
+  @Select("SELECT * FROM userinfo") // すべてのユーザー情報を取得するSQL
   List<UserInfo> selectAllUsers(); // すべてのユーザーを返すメソッド
 
   @Insert("INSERT INTO userinfo (userName, roomId) VALUES (#{userName}, #{roomId});")
@@ -32,5 +32,5 @@ public interface UserInfoMapper {
   void insertRoomId(UserInfo userInfo);
 
   @Delete("DELETE FROM userinfo WHERE id = #{id}")
-    void deleteUserById(int id);
+  void deleteUserById(int id);
 }

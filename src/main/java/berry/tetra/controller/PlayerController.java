@@ -47,6 +47,14 @@ public class PlayerController {
 
   @GetMapping("/qmatch")
   public String qmatch(@RequestParam("playername") String playername, Model model) {
+    UserInfo userInfo = userInfoMapper.selectByName(playername);
+    int roomid = 1;
+    int roomlimit = 2;
+    while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
+      roomid++;
+    }
+    userInfo.setRoomId(roomid);
+    userInfoMapper.insertRoomId(userInfo);
     return "room.html";
   }
 
