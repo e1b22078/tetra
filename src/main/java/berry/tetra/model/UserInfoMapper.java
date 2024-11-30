@@ -21,6 +21,9 @@ public interface UserInfoMapper {
   @Select("SELECT COUNT(*) FROM userinfo WHERE roomId = #{roomId}")
   int selectCountRoomId(int roomId);
 
+  @Select("SELECT roomId FROM userinfo WHERE userName = #{userName}")
+  int selectRoomId(String userName);
+
   @Select("SELECT * FROM userinfo") // すべてのユーザー情報を取得するSQL
   List<UserInfo> selectAllUsers(); // すべてのユーザーを返すメソッド
 
@@ -30,6 +33,9 @@ public interface UserInfoMapper {
 
   @Update("UPDATE userinfo SET roomId=#{roomId} WHERE ID = #{id}")
   void insertRoomId(UserInfo userInfo);
+
+  @Update("UPDATE userinfo SET roomId = 0 WHERE userName = #{userName}")
+  void resetRoomId(String userName);
 
   @Delete("DELETE FROM userinfo WHERE id = #{id}")
   void deleteUserById(int id);
