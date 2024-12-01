@@ -21,6 +21,9 @@ public interface UserInfoMapper {
   @Select("SELECT COUNT(*) FROM userinfo WHERE roomId = #{roomId}")
   int selectCountRoomId(int roomId);
 
+  @Select("SELECT * FROM userinfo WHERE roomId = #{roomId}")
+  List<UserInfo> selectAllByRoomId(int roomId);
+
   @Select("SELECT roomId FROM userinfo WHERE userName = #{userName}")
   int selectRoomId(String userName);
 

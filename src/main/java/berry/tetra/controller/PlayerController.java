@@ -1,7 +1,5 @@
 package berry.tetra.controller;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
@@ -49,10 +47,8 @@ public class PlayerController {
   }
 
   @GetMapping("/qmatch")
-  public String qmatch(HttpSession session, Model model) {
-    String playername = (String) session.getAttribute("playername");
-    List<UserInfo> userInfos = userInfoMapper.selectAllByName(playername);
-    UserInfo userInfo = userInfos.get(0);
+  public String qmatch(@RequestParam("playername") String playername, Model model) {
+    UserInfo userInfo = userInfoMapper.selectAllByName(playername).get(0);
     int roomid = 1;
     int roomlimit = 2;
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
@@ -60,6 +56,10 @@ public class PlayerController {
     }
     userInfo.setRoomId(roomid);
     userInfoMapper.insertRoomId(userInfo);
+    model.addAttribute("roomid", roomid);
+
+    // サーバからクライアントにユーザ一覧を送信
+    messagingTemplate.convertAndSend("/topic/roomusers", "reload");
     return "room.html";
   }
 
