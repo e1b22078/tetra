@@ -12,8 +12,8 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper {
 
-  @Select("SELECT * FROM userinfo WHERE userName = #{userName} AND roomId = 0")
-  List<UserInfo> selectAllByName(String userName);// 引数のusernameかつroomIdが0のUserInfoを全て返す
+  @Select("SELECT * FROM userinfo WHERE userName = #{userName} AND roomId = #{roomId}")
+  List<UserInfo> selectAllByName(String userName, int roomId);// 引数のusernameかつroomIdが0のUserInfoを全て返す
 
   @Select("SELECT MAX(roomId) FROM userinfo")
   int selectMaxRoomId();

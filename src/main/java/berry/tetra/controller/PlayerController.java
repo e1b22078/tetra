@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import berry.tetra.model.UserInfo;
 import berry.tetra.model.UserInfoMapper;
-import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class PlayerController {
@@ -47,7 +46,7 @@ public class PlayerController {
 
   @GetMapping("/qmatch")
   public String qmatch(@RequestParam("playername") String playername, Model model) {
-    UserInfo userInfo = userInfoMapper.selectAllByName(playername).get(0);
+    UserInfo userInfo = userInfoMapper.selectAllByName(playername,0).get(0);
     int roomid = 1;
     int roomlimit = 2;
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
@@ -64,8 +63,8 @@ public class PlayerController {
   }
 
   @GetMapping("/player")
-  public String showPlayer(@RequestParam("playername") String playername, Model model) {
-    UserInfo userInfo = userInfoMapper.selectAllByName(playername).get(0);
+  public String showPlayer(@RequestParam("playername") String playername,@RequestParam("roomid") int roomId,Model model) {
+    UserInfo userInfo = userInfoMapper.selectAllByName(playername, roomId).get(0);
     userInfo.setRoomId(0);
     userInfoMapper.resetRoomId(userInfo);
 
