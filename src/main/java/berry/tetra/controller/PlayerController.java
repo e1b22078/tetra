@@ -46,7 +46,7 @@ public class PlayerController {
 
   @GetMapping("/qmatch")
   public String qmatch(@RequestParam("playername") String playername, Model model) {
-    UserInfo userInfo = userInfoMapper.selectAllByName(playername,0).get(0);
+    UserInfo userInfo = userInfoMapper.selectAllByName(playername, 0).get(0);
     int roomid = 1;
     int roomlimit = 2;
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
@@ -63,7 +63,8 @@ public class PlayerController {
   }
 
   @GetMapping("/player")
-  public String showPlayer(@RequestParam("playername") String playername,@RequestParam("roomid") int roomId,Model model) {
+  public String showPlayer(@RequestParam("playername") String playername, @RequestParam("roomid") int roomId,
+      Model model) {
     UserInfo userInfo = userInfoMapper.selectAllByName(playername, roomId).get(0);
     userInfo.setRoomId(0);
     userInfoMapper.resetRoomId(userInfo);
@@ -75,9 +76,9 @@ public class PlayerController {
   }
 
   @GetMapping("/game")
-  public String game(@RequestParam("playername") String playername,@RequestParam("roomid") int roomId,Model model) {
-    model.addAttribute("playername",playername);
-    model.addAttribute("roomId", roomId);
+  public String game(@RequestParam("playername") String playername, @RequestParam("roomid") int roomId, Model model) {
+    model.addAttribute("playername", playername);
+    model.addAttribute("roomid", roomId);
     return "game.html";
   }
 }
