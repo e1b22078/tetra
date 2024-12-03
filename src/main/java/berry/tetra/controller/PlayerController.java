@@ -29,15 +29,14 @@ public class PlayerController {
 
   // プレイヤー情報を表示するページ
   @PostMapping("/player")
-  public String player(@RequestParam("playername") String playername, HttpSession session, Model model) {
-    session.setAttribute("playername", playername);
+  public String player(@RequestParam("playername") String playername, Model model) {
     // プレイヤー名をデータベースに保存
     UserInfo userInfo = new UserInfo();
     userInfo.setUserName(playername);
     userInfo.setRoomId(0);
     userInfoMapper.insertUserInfo(userInfo);
 
-    // モデルにプレイヤー名とユーザーリストを追加
+    // モデルにプレイヤー名
     model.addAttribute("playername", playername);
 
     // サーバからクライアントにユーザ一覧を送信
@@ -57,6 +56,7 @@ public class PlayerController {
     userInfo.setRoomId(roomid);
     userInfoMapper.insertRoomId(userInfo);
     model.addAttribute("roomid", roomid);
+    model.addAttribute("playername", playername);
 
     // サーバからクライアントにユーザ一覧を送信
     messagingTemplate.convertAndSend("/topic/roomusers", "reload");
@@ -64,11 +64,14 @@ public class PlayerController {
   }
 
   @GetMapping("/player")
-  public String showPlayer(HttpSession session) {
-    String playername = (String) session.getAttribute("playername");
-    userInfoMapper.resetRoomId(playername);
-    // サーバからクライアントにユーザ一覧を送信
-    messagingTemplate.convertAndSend("/topic/users", userInfoMapper.selectAllUsers());
+  public String showPlayer(@RequestParam("playername") String playername, Model model) {
+    UserInfo userInfo = userInfoMapper.selectAllByName(playername).get(0);
+    userInfo.setRoomId(0);
+    userInfoMapper.resetRoomId(userInfo);
+
+    // モデルにプレイヤー名
+    model.addAttribute("playername", playername);
+
     return "player.html";
   }
 

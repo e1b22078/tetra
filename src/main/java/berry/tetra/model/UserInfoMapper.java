@@ -27,18 +27,18 @@ public interface UserInfoMapper {
   @Select("SELECT roomId FROM userinfo WHERE userName = #{userName}")
   int selectRoomId(String userName);
 
-  @Select("SELECT * FROM userinfo") // すべてのユーザー情報を取得するSQL
-  List<UserInfo> selectAllUsers(); // すべてのユーザーを返すメソッド
+  @Select("SELECT * FROM userinfo")
+  List<UserInfo> selectAllUsers();// すべてのユーザーを返すメソッド
 
   @Insert("INSERT INTO userinfo (userName, roomId) VALUES (#{userName}, #{roomId});")
   @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
   void insertUserInfo(UserInfo userInfo);
 
-  @Update("UPDATE userinfo SET roomId=#{roomId} WHERE ID = #{id}")
+  @Update("UPDATE userinfo SET roomId=#{roomId} WHERE id = #{id}")
   void insertRoomId(UserInfo userInfo);
 
-  @Update("UPDATE userinfo SET roomId = 0 WHERE userName = #{userName}")
-  void resetRoomId(String userName);
+  @Update("UPDATE userinfo SET roomId = 0 WHERE id = #{id}")
+  void resetRoomId(UserInfo userInfo);
 
   @Delete("DELETE FROM userinfo WHERE id = #{id}")
   void deleteUserById(int id);
