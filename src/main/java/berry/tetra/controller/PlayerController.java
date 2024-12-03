@@ -75,7 +75,9 @@ public class PlayerController {
   }
 
   @GetMapping("/game")
-  public String game() {
+  public String game(@RequestParam("playername") String playername,@RequestParam("roomid") int roomId,Model model) {
+    model.addAttribute("playername",playername);
+    model.addAttribute("roomId", roomId);
     return "game.html";
   }
 }
