@@ -6,12 +6,21 @@ stompClient.connect({}, () => {
   stompClient.subscribe('/topic/roomusers', () => {
     getData();
   });
+  stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), () => {
+    console.log("startGame");
+    window.location.href = $("#gamestart").attr("href") + "&trigger=true";
+  });
 });
 
 function showMessage(message) {
   $("#message").html("");
   for (var i in message) {
     $("#message").append("<tr><td>" + message[i]["userName"] + "</td></tr>")
+  }
+  if (message.length > 1) {
+    $("#gamestart").show();
+  } else {
+    $("#gamestart").hide();
   }
 }
 

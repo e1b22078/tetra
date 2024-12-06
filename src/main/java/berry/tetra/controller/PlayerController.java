@@ -76,9 +76,13 @@ public class PlayerController {
   }
 
   @GetMapping("/game")
-  public String game(@RequestParam("playername") String playername, @RequestParam("roomid") int roomId, Model model) {
+  public String game(@RequestParam("playername") String playername, @RequestParam("roomid") int roomId,
+      @RequestParam(value = "trigger", defaultValue = "false") boolean trigger, Model model) {
     model.addAttribute("playername", playername);
     model.addAttribute("roomid", roomId);
+    if (!trigger) {
+      messagingTemplate.convertAndSend("/topic/startGame/" + roomId, "gamestart");
+    }
     return "game.html";
   }
 }
