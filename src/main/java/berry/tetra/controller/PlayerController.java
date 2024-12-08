@@ -15,7 +15,7 @@ import berry.tetra.model.UserInfoMapper;
 public class PlayerController {
 
   @Autowired
-  UserInfoMapper userInfoMapper;
+  private UserInfoMapper userInfoMapper;
 
   @Autowired
   private SimpMessagingTemplate messagingTemplate;

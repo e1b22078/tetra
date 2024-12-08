@@ -2,13 +2,20 @@ let currentQuestion = 0; // 現在の問題数
 const totalQuestions = 10; // 合計問題数
 let correctCount = 0; // 正解数（点数として使用）
 let timeoutId; // setTimeout の ID を保持する変数
+const socket = new SockJS('/websocket');
+const stompClient = Stomp.over(socket);
 
-async function fetchQuiz() {
+stompClient.connect({}, () => {
+  console.log("Connected");
+  stompClient.subscribe('/topic/quiz/' + roomid, (response) => {
+    const quiz = JSON.parse(response.body);
+    startQuiz(quiz);
+  });
+  fetchQuiz();
+});
+
+async function startQuiz(quiz) {
   try {
-    // APIからクイズデータを取得
-    const response = await fetch('/api/quiz');
-    const quiz = await response.json();
-
     // クイズデータをページに表示
     document.getElementById('word').textContent = quiz.word;
     const optionsContainer = document.getElementById('options');
@@ -77,5 +84,8 @@ function loadNextQuiz() {
   currentQuestion++; // 現在の問題数を増やす
 }
 
-// ページ読み込み時に最初のクイズを取得
-window.onload = fetchQuiz;
+function fetchQuiz() {
+  const params = {roomid : roomid};
+  const query = new URLSearchParams(params);
+  fetch(`/api/quiz?${query}`)
+}
