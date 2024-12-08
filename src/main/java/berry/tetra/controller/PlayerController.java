@@ -63,18 +63,38 @@ public class PlayerController {
     }
     if (roomMapper.selectCountRoomId(roomid) == 0) {
       Room room = new Room();
-      room.setRoomid(roomid);
+      room.setRoomId(roomid);
       room.setProcess(0);
+      room.setCount(0);
+      room.setRoomSize(1);
       roomMapper.insertRoom(room);
+    } else {
+      Room room = roomMapper.selectByRoomId(roomid);
+      room.setRoomSize(room.getRoomSize() + 1);
+      roomMapper.updateRoomSize(room);
     }
     userInfo.setRoomId(roomid);
     userInfoMapper.insertRoomId(userInfo);
     model.addAttribute("roomid", roomid);
     model.addAttribute("playername", userInfo.getUserName());
+    model.addAttribute("id", userInfo.getId());
 
     // サーバからクライアントにユーザー一覧を送信
     messagingTemplate.convertAndSend("/topic/roomusers", "reload");
     return "room.html";
+  }
+
+  @GetMapping("/player")
+  public String showPlayer(@RequestParam("id") int id, Model model) {
+    UserInfo userInfo = userInfoMapper.selectById(id);
+    userInfo.setRoomId(0);
+    userInfoMapper.resetRoomId(userInfo);
+
+    // モデルにプレイヤー名
+    model.addAttribute("playername", userInfo.getUserName());
+    model.addAttribute("id", userInfo.getId());
+
+    return "player.html";
   }
 
   @GetMapping("/game")
@@ -82,6 +102,7 @@ public class PlayerController {
       @RequestParam(value = "trigger", defaultValue = "false") boolean trigger, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
     model.addAttribute("playername", userInfo.getUserName());
+    model.addAttribute("id", userInfo.getId());
     model.addAttribute("roomid", roomId);
     if (!trigger) {
       messagingTemplate.convertAndSend("/topic/startGame/" + roomId, "gamestart");

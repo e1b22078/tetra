@@ -13,5 +13,7 @@ CREATE TABLE word (
 );
 CREATE TABLE room (
     roomId INT PRIMARY KEY,
-    process INT NOT NULL
+    process INT NOT NULL,
+    count INT,
+    roomSize INT
 );

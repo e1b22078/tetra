@@ -80,7 +80,8 @@
 <body>
   <h1>クイズゲーム</h1>
   <script th:inline="javascript">
-    const roomid = /*[[${roomid}]]*/"roomid";
+    const roomId = /*[[${roomid}]]*/"roomid";
+    const playerName = /*[[${playername}]]*/"playername";
   </script>
 
   <div id="quiz-container" class="quiz-container">
@@ -91,7 +92,7 @@
     <button id="next-button" onclick="loadNextQuiz()">次の問題</button>
   </div>
   <center>
-    <a th:href="@{/player(playername=${playername},roomid=${roomid})}">もどる</a>
+    <a th:href="@{/player(id=${id},roomid=${roomid})}">もどる</a>
   </center>
 </body>
 

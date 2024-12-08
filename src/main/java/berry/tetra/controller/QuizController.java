@@ -31,26 +31,28 @@ public class QuizController {
    * @return QuizQuestion クイズデータ
    */
   @GetMapping
-  public QuizQuestion getQuiz(@RequestParam("roomid") int roomId) {
+  public void getQuiz(@RequestParam("roomid") int roomId) {
     QuizQuestion quiz= quizService.generateQuiz();
-    try {
-      Room room = new Room();
-      int process = roomMapper.selectProcess(roomId);
-      process++;
-      room.setRoomid(roomId);
-      room.setProcess(process);
-      roomMapper.updateProcess(room);
-      quiz.setProcess(process);
-      Thread.sleep(5000);
-    } catch (Exception e) {
-    }
+    Room room = roomMapper.selectByRoomId(roomId);
+    int process = room.getProcess() + 1;
+    room.setProcess(process);
+    roomMapper.updateProcess(room);
+    quiz.setProcess(process);
     messagingTemplate.convertAndSend("/topic/quiz/" + roomId, quiz);
-    return quiz;
   }
 
-  @GetMapping("/correct")
-  public void getMethodName(@RequestParam("") String param) {
-    
+  @GetMapping("/count")
+  public boolean setFailCount(@RequestParam("roomid") int roomId) {
+    Room room = roomMapper.selectByRoomId(roomId);
+
+    room.setCount(room.getCount() + 1);
+    System.out.println(room.getCount());
+    if(room.getCount() == room.getRoomSize()) {
+      room.setCount(0);
+      roomMapper.updateCount(room);
+      return true;
+    }
+    roomMapper.updateCount(room);
+    return false;
   }
-  
 }
