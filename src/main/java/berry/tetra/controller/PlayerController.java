@@ -57,7 +57,7 @@ public class PlayerController {
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
       roomid++;
     }
-    if(roomMapper.selectCountRoomId(roomid) == 0) {
+    if (roomMapper.selectCountRoomId(roomid) == 0) {
       Room room = new Room();
       room.setRoomid(roomid);
       room.setProcess(0);
@@ -95,5 +95,11 @@ public class PlayerController {
       messagingTemplate.convertAndSend("/topic/startGame/" + roomId, "gamestart");
     }
     return "game.html";
+  }
+
+  @GetMapping("/ranking")
+  public String ranking(Model model) {
+    model.addAttribute("users", userInfoMapper.selectAllRanking());
+    return "ranking.html";
   }
 }

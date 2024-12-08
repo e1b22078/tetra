@@ -27,7 +27,9 @@ public class TetraAuthConfiguration {
             .requestMatchers(AntPathRequestMatcher.antMatcher("/**"))
             .permitAll())// 上記以外は全員アクセス可能
         .csrf(csrf -> csrf
-            .ignoringRequestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/*")))
+            .ignoringRequestMatchers(
+                AntPathRequestMatcher.antMatcher("/h2-console/*"),
+                AntPathRequestMatcher.antMatcher("/api/score")))
         .headers(headers -> headers
             .frameOptions(frameOptions -> frameOptions
                 .sameOrigin()));

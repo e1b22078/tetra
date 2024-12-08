@@ -1,7 +1,9 @@
 CREATE TABLE userinfo (
     id IDENTITY,
     userName VARCHAR NOT NULL,
-    roomId INT NOT NULL
+    roomId INT NOT NULL,
+    score INT,
+    rank INT
 );
 CREATE TABLE word (
     id IDENTITY,
