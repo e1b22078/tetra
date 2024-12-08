@@ -16,5 +16,5 @@ function showMessage(message) {
 }
 
 fetch('/api/user')
-  .then(response => { return response.json() })
-  .then(result => { showMessage(result) });
+  .then(response => response.json())
+  .then(result => showMessage(result));

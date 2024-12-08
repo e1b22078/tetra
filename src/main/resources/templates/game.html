@@ -5,6 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>英単語クイズ</title>
+  <script src="/webjars/jquery/jquery.min.js"></script>
+  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+  <script src="/webjars/stomp-websocket/stomp.min.js"></script>
   <script src="game.js"></script>
   <style>
     body {
@@ -76,6 +79,10 @@
 
 <body>
   <h1>クイズゲーム</h1>
+  <script th:inline="javascript">
+    const roomid = /*[[${roomid}]]*/"roomid";
+  </script>
+
   <div id="quiz-container" class="quiz-container">
     <p>英単語: <span id="word"></span></p>
     <div id="options" class="options"></div>
