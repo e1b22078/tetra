@@ -26,27 +26,31 @@ public class PlayerController {
     return "name.html";
   }
 
-  // プレイヤー情報を表示するページ
+  // プレイヤー情報を表示するページ（POSTメソッド）
   @PostMapping("/player")
   public String player(@RequestParam("playername") String playername, Model model) {
-    // プレイヤー名をデータベースに保存
+    // プレイヤー名を使ってデータベースに新しいユーザー情報を追加する（仮の処理）
     UserInfo userInfo = new UserInfo();
     userInfo.setUserName(playername);
-    userInfo.setRoomId(0);
-    userInfoMapper.insertUserInfo(userInfo);
+    userInfoMapper.insertUserInfo(userInfo);  // ここでプレイヤー情報をDBに追加
 
-    // モデルにプレイヤー名
+    // プレイヤーIDを取得（仮の方法）
+    int id = userInfo.getId();  // 新しく挿入されたユーザーのIDを取得
+
+    // プレイヤー名をモデルに設定
     model.addAttribute("playername", playername);
+    model.addAttribute("id", id);  // idをHTMLに渡す
 
-    // サーバからクライアントにユーザ一覧を送信
+    // サーバからクライアントにユーザー一覧を送信
     messagingTemplate.convertAndSend("/topic/users", userInfoMapper.selectAllUsers());
 
+    // プレイヤー情報を表示するページにリダイレクト
     return "player.html";
   }
 
   @GetMapping("/qmatch")
-  public String qmatch(@RequestParam("playername") String playername, Model model) {
-    UserInfo userInfo = userInfoMapper.selectAllByName(playername, 0).get(0);
+  public String qmatch(@RequestParam("id") int id, Model model) {
+    UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
     int roomid = 1;
     int roomlimit = 2;
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
@@ -55,30 +59,18 @@ public class PlayerController {
     userInfo.setRoomId(roomid);
     userInfoMapper.insertRoomId(userInfo);
     model.addAttribute("roomid", roomid);
-    model.addAttribute("playername", playername);
+    model.addAttribute("playername", userInfo.getUserName());
 
-    // サーバからクライアントにユーザ一覧を送信
+    // サーバからクライアントにユーザー一覧を送信
     messagingTemplate.convertAndSend("/topic/roomusers", "reload");
     return "room.html";
   }
 
-  @GetMapping("/player")
-  public String showPlayer(@RequestParam("playername") String playername, @RequestParam("roomid") int roomId,
-      Model model) {
-    UserInfo userInfo = userInfoMapper.selectAllByName(playername, roomId).get(0);
-    userInfo.setRoomId(0);
-    userInfoMapper.resetRoomId(userInfo);
-
-    // モデルにプレイヤー名
-    model.addAttribute("playername", playername);
-
-    return "player.html";
-  }
-
   @GetMapping("/game")
-  public String game(@RequestParam("playername") String playername, @RequestParam("roomid") int roomId,
+  public String game(@RequestParam("id") int id, @RequestParam("roomid") int roomId,
       @RequestParam(value = "trigger", defaultValue = "false") boolean trigger, Model model) {
-    model.addAttribute("playername", playername);
+    UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
+    model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("roomid", roomId);
     if (!trigger) {
       messagingTemplate.convertAndSend("/topic/startGame/" + roomId, "gamestart");

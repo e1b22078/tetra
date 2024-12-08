@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="utf-8">
   <title>Player</title>
-  <script src="/webjars/jquery/jquery.min.js"></script>
-  <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-  <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-  <script src="player.js"></script>
 </head>
 
 <body>
-  <h1><span th:if="${playername}">hello [[${playername}]]</span></h1>
-  <a th:href="@{/qmatch(playername=${playername})}">クイックマッチ</a><br>
+  <h1><span th:if="${playername}">Hello, [[${playername}]]</span></h1>
+  <p>プレイヤーID: [[${id}]]</p>
+  <a th:href="@{/qmatch(id=${id})}">クイックマッチ</a><br>
   <h2>登録されているユーザー一覧:</h2>
   <table>
     <tbody id="message">
     </tbody>
   </table>
-  <a href="/logout">ログアウト</a>
+  <!-- 戻るボタンのリンク修正 -->
+  <a th:href="@{/player(id=${id})}">もどる</a>
 </body>
 
 </html>

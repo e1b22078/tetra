@@ -42,4 +42,7 @@ public interface UserInfoMapper {
 
   @Delete("DELETE FROM userinfo WHERE id = #{id}")
   void deleteUserById(int id);
+
+  @Select("SELECT * FROM userinfo WHERE id = #{id}")
+  UserInfo selectById(int id);
 }
