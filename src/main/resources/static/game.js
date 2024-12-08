@@ -4,6 +4,12 @@ let timeoutId; // setTimeout の ID を保持する変数
 const socket = new SockJS('/websocket');
 const stompClient = Stomp.over(socket);
 
+function getQueryParam(param) {
+  const params = new URLSearchParams(window.location.search);
+  return params.get(param);
+}
+const playerName = getQueryParam('playername')
+
 stompClient.connect({}, () => {
   console.log("Connected");
   stompClient.subscribe('/topic/quiz/' + roomid, (response) => {
@@ -16,9 +22,10 @@ stompClient.connect({}, () => {
 async function startQuiz(quiz) {
   try {
     if (quiz.process >= totalQuestions) {
+      saveScoreToDatabase(playerName, correctCount);
       document.getElementById('quiz-container').innerHTML = `
             <h2>クイズ終了！</h2>
-            <p>あなたの点数は ${correctCount} 点です</p>
+            <p>${playerName}の点数は ${correctCount} 点です</p>
           `;
       return;
     }
@@ -83,7 +90,27 @@ function loadNextQuiz() {
 }
 
 function fetchQuiz() {
-  const params = {roomid : roomid};
+  const params = { roomid: roomid };
   const query = new URLSearchParams(params);
   fetch(`/api/quiz?${query}`)
+}
+
+async function saveScoreToDatabase(userName, score) {
+  try {
+    console.log(`送信するデータ:`, { userName, score });
+    const response = await fetch('/api/score', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userName, score }),
+    });
+    if (!response.ok) {
+      throw new Error('スコアの保存に失敗しました');
+    }
+
+    console.log('スコアが正常に保存されました');
+  } catch (error) {
+    console.error('スコア送信中にエラーが発生しました:', error);
+  }
 }

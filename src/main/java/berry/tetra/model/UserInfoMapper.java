@@ -4,6 +4,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -30,6 +31,9 @@ public interface UserInfoMapper {
   @Select("SELECT * FROM userinfo")
   List<UserInfo> selectAllUsers();// すべてのユーザーを返すメソッド
 
+  @Select("SELECT userName, score, RANK() OVER (ORDER BY score DESC) AS rank FROM userInfo ORDER BY rank LIMIT 5")
+  List<UserInfo> selectAllRanking();
+
   @Insert("INSERT INTO userinfo (userName, roomId) VALUES (#{userName}, #{roomId});")
   @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
   void insertUserInfo(UserInfo userInfo);
@@ -39,6 +43,9 @@ public interface UserInfoMapper {
 
   @Update("UPDATE userinfo SET roomId = 0 WHERE id = #{id}")
   void resetRoomId(UserInfo userInfo);
+
+  @Update("UPDATE userinfo SET score = #{score} WHERE userName = #{userName}")
+  int updateScore(@Param("userName") String userName, @Param("score") int score);
 
   @Delete("DELETE FROM userinfo WHERE id = #{id}")
   void deleteUserById(int id);

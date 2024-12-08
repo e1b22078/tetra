@@ -4,6 +4,8 @@ public class UserInfo {
   int id;
   String userName;
   int roomId;
+  int score;
+  int rank;
 
   public int getRoomId() {
     return roomId;
@@ -27,5 +29,21 @@ public class UserInfo {
 
   public void setId(int id) {
     this.id = id;
+  }
+
+  public int getScore() {
+    return score;
+  }
+
+  public void setScore(int score) {
+    this.score = score;
+  }
+
+  public int getRank() {
+    return rank;
+  }
+
+  public void setRank(int rank) {
+    this.rank = rank;
   }
 }
