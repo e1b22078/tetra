@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import berry.tetra.model.Room;
+import berry.tetra.model.RoomMapper;
 import berry.tetra.model.UserInfo;
 import berry.tetra.model.UserInfoMapper;
 
@@ -19,6 +21,9 @@ public class PlayerController {
 
   @Autowired
   private SimpMessagingTemplate messagingTemplate;
+
+  @Autowired
+  private RoomMapper roomMapper;
 
   // 名前入力ページへのGETリクエスト
   @GetMapping("/name")
@@ -51,6 +56,12 @@ public class PlayerController {
     int roomlimit = 2;
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
       roomid++;
+    }
+    if(roomMapper.selectCountRoomId(roomid) == 0) {
+      Room room = new Room();
+      room.setRoomid(roomid);
+      room.setProcess(0);
+      roomMapper.insertRoom(room);
     }
     userInfo.setRoomId(roomid);
     userInfoMapper.insertRoomId(userInfo);

@@ -9,3 +9,7 @@ CREATE TABLE word (
     hinsi VARCHAR NOT NULL,
     mean VARCHAR NOT NULL
 );
+CREATE TABLE room (
+    roomId INT PRIMARY KEY,
+    process INT NOT NULL
+);

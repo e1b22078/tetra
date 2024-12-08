@@ -1,27 +1,19 @@
 package berry.tetra.model;
 
-import java.util.ArrayList;
-import org.springframework.stereotype.Component;
-
-@Component
 public class Room {
-  ArrayList<String> users = new ArrayList<>();
+  int roomId;
+  int process;
 
-  public void addUser(String name) {
-    for (String s : this.users) {
-      if (s.equals(name)) {
-        return;
-      }
-    }
-    this.users.add(name);
+  public int getRoomid() {
+    return roomId;
   }
-
-  public ArrayList<String> getUsers() {
-    return users;
+  public void setRoomid(int roomId) {
+    this.roomId = roomId;
   }
-
-  public void setUsers(ArrayList<String> users) {
-    this.users = users;
+  public int getProcess() {
+    return process;
   }
-
+  public void setProcess(int process) {
+    this.process = process;
+  }
 }

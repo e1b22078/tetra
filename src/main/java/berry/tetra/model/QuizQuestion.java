@@ -6,6 +6,7 @@ public class QuizQuestion {
   private String word;
   private String correctMean;
   private List<String> options;
+  private int process;
 
   public QuizQuestion(String word, String correctMean, List<String> options) {
     this.word = word;
@@ -35,6 +36,14 @@ public class QuizQuestion {
 
   public void setOptions(List<String> options) {
     this.options = options;
+  }
+
+  public int getProcess() {
+    return process;
+  }
+
+  public void setProcess(int process) {
+    this.process = process;
   }
 
 }
