@@ -6,9 +6,17 @@ stompClient.connect({}, () => {
   stompClient.subscribe('/topic/roomusers', () => {
     getData();
   });
-  stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), () => {
+  stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), (response) => {
     console.log("startGame");
-    window.location.href = $("#gamestart").attr("href");
+    const params = { roomid: $("#roomid").text(), id: id };
+    const query = new URLSearchParams(params);
+    fetch(`/game?${query}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(JSON.parse(response.body)),
+    })
   });
 });
 

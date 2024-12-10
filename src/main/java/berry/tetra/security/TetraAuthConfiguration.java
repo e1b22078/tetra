@@ -29,7 +29,8 @@ public class TetraAuthConfiguration {
         .csrf(csrf -> csrf
             .ignoringRequestMatchers(
                 AntPathRequestMatcher.antMatcher("/h2-console/*"),
-                AntPathRequestMatcher.antMatcher("/api/score")))
+                AntPathRequestMatcher.antMatcher("/api/score"),
+                AntPathRequestMatcher.antMatcher("/game")))
         .headers(headers -> headers
             .frameOptions(frameOptions -> frameOptions
                 .sameOrigin()));
