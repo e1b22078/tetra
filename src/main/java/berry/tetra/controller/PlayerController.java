@@ -8,10 +8,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import berry.tetra.model.QuizQuestion;
 import berry.tetra.model.Room;
 import berry.tetra.model.RoomMapper;
 import berry.tetra.model.UserInfo;
 import berry.tetra.model.UserInfoMapper;
+import berry.tetra.service.QuizService;
 
 @Controller
 public class PlayerController {
@@ -25,6 +27,9 @@ public class PlayerController {
   @Autowired
   private RoomMapper roomMapper;
 
+  @Autowired
+  private QuizService quizService;
+
   // 名前入力ページへのGETリクエスト
   @GetMapping("/name")
   public String name() {
@@ -37,14 +42,14 @@ public class PlayerController {
     // プレイヤー名を使ってデータベースに新しいユーザー情報を追加する（仮の処理）
     UserInfo userInfo = new UserInfo();
     userInfo.setUserName(playername);
-    userInfoMapper.insertUserInfo(userInfo);  // ここでプレイヤー情報をDBに追加
+    userInfoMapper.insertUserInfo(userInfo); // ここでプレイヤー情報をDBに追加
 
     // プレイヤーIDを取得（仮の方法）
-    int id = userInfo.getId();  // 新しく挿入されたユーザーのIDを取得
+    int id = userInfo.getId(); // 新しく挿入されたユーザーのIDを取得
 
     // プレイヤー名をモデルに設定
     model.addAttribute("playername", playername);
-    model.addAttribute("id", id);  // idをHTMLに渡す
+    model.addAttribute("id", id); // idをHTMLに渡す
 
     // サーバからクライアントにユーザー一覧を送信
     messagingTemplate.convertAndSend("/topic/users", userInfoMapper.selectAllUsers());
@@ -103,6 +108,13 @@ public class PlayerController {
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("id", userInfo.getId());
     model.addAttribute("roomid", roomId);
+    QuizQuestion quiz = quizService.generateQuiz();
+    Room room = roomMapper.selectByRoomId(roomId);
+    int process = room.getProcess() + 1;
+    room.setProcess(process);
+    roomMapper.updateProcess(room);
+    quiz.setProcess(process);
+    model.addAttribute("quiz", quiz);
     return "game.html";
   }
 
