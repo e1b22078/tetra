@@ -98,16 +98,17 @@ public class PlayerController {
   }
 
   @GetMapping("/game")
-  public String game(@RequestParam("id") int id, @RequestParam("roomid") int roomId,
-      @RequestParam(value = "trigger", defaultValue = "false") boolean trigger, Model model) {
+  public String game(@RequestParam("id") int id, @RequestParam("roomid") int roomId, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("id", userInfo.getId());
     model.addAttribute("roomid", roomId);
-    if (!trigger) {
-      messagingTemplate.convertAndSend("/topic/startGame/" + roomId, "gamestart");
-    }
     return "game.html";
+  }
+
+  @GetMapping("/init")
+  public void init(@RequestParam("roomid") int roomId) {
+    messagingTemplate.convertAndSend("/topic/startGame/" + roomId, "gamestart");
   }
 
   @GetMapping("/ranking")
