@@ -16,7 +16,8 @@
     <tbody id="message">
     </tbody>
   </table>
-  <a id="gamestart" th:href="@{/game(id=${id}, roomid=${roomid})}">ゲームスタート</a>
+  <a id="init" th:href="@{/init(roomid=${roomid})}">ゲームスタート</a>
+  <a id="gamestart" th:href="@{/game(id=${id}, roomid=${roomid})}"></a>
   <a th:href="@{/player(id=${id}, roomid=${roomid})}">もどる</a>
 </body>
 

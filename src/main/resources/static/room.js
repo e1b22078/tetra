@@ -8,7 +8,7 @@ stompClient.connect({}, () => {
   });
   stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), () => {
     console.log("startGame");
-    window.location.href = $("#gamestart").attr("href") + "&trigger=true";
+    window.location.href = $("#gamestart").attr("href");
   });
 });
 
@@ -18,9 +18,9 @@ function showMessage(message) {
     $("#message").append("<tr><td>" + message[i]["userName"] + "</td></tr>")
   }
   if (message.length > 1) {
-    $("#gamestart").show();
+    $("#init").show();
   } else {
-    $("#gamestart").hide();
+    $("#init").hide();
   }
 }
 
