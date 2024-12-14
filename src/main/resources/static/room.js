@@ -6,18 +6,21 @@ stompClient.connect({}, () => {
   stompClient.subscribe('/topic/roomusers', () => {
     getData();
   });
-  stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), (response) => {
+  stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), async (response) => {
     console.log("startGame");
-    const params = { roomid: $("#roomid").text(), id: id };
+    const quiz = JSON.parse(response.body);
+    const params = {
+      id: $("#userid").text(),
+      roomid: $("#roomid").text(),
+      word: quiz.word,
+      correctMean: quiz.correctMean,
+      options: quiz.options.join(','),
+      process: quiz.process
+    };
     const query = new URLSearchParams(params);
-    fetch(`/game?${query}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(JSON.parse(response.body)),
-    })
+    window.location.href = `/game?${query.toString()}`;
   });
+
 });
 
 function showMessage(message) {

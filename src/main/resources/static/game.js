@@ -20,7 +20,7 @@ stompClient.connect({}, () => {
 function startQuiz(quiz) {
   try {
     result.textContent = '';
-    if (quiz.process >= totalQuestions + 2) {
+    if (quiz.process >= totalQuestions + 1) {
       saveScoreToDatabase(playerName, correctCount);
       document.getElementById('quiz-container').innerHTML = `
             <h2>クイズ終了！</h2>

@@ -11,10 +11,8 @@
 </head>
 
 <body>
-  <script th:inline="javascript">
-    const id = /*[[${id}]]*/"id";
-  </script>
   <div id="roomid" th:text="${roomid}"></div>
+  <div id="userid" th:text="${id}"></div>
   <table>
     <tbody id="message">
     </tbody>

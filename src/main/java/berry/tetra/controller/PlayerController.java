@@ -1,15 +1,15 @@
 package berry.tetra.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import berry.tetra.model.Quiz;
 import berry.tetra.model.QuizQuestion;
 import berry.tetra.model.Room;
 import berry.tetra.model.RoomMapper;
@@ -104,25 +104,27 @@ public class PlayerController {
     return "player.html";
   }
 
-  @PostMapping("/game")
+  @GetMapping("/game")
   public String game(@RequestParam("id") int id, @RequestParam("roomid") int roomId,
-      @RequestBody QuizQuestion quiz, Model model) {
-    UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
+      @RequestParam("word") String word, @RequestParam("correctMean") String correctMean,
+      @RequestParam List<String> options, @RequestParam int process, Model model) {
+
+    UserInfo userInfo = userInfoMapper.selectById(id);
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("id", userInfo.getId());
     model.addAttribute("roomid", roomId);
-    Room room = roomMapper.selectByRoomId(roomId);
-    int process = room.getProcess() + 1;
-    room.setProcess(process);
-    roomMapper.updateProcess(room);
-    quiz.setProcess(process);
-    model.addAttribute("quiz", quiz);
+    model.addAttribute("quiz", new QuizQuestion(word, correctMean, options));
     return "game.html";
   }
 
   @GetMapping("/init")
   public void init(@RequestParam("roomid") int roomId) {
     QuizQuestion quiz = quizService.generateQuiz();
+    Room room = roomMapper.selectByRoomId(roomId);
+    int process = room.getProcess() + 1;
+    room.setProcess(process);
+    roomMapper.updateProcess(room);
+    quiz.setProcess(process);
     messagingTemplate.convertAndSend("/topic/startGame/" + roomId, quiz);
   }
 
