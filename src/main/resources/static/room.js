@@ -6,10 +6,21 @@ stompClient.connect({}, () => {
   stompClient.subscribe('/topic/roomusers', () => {
     getData();
   });
-  stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), () => {
+  stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), async (response) => {
     console.log("startGame");
-    window.location.href = $("#gamestart").attr("href");
+    const quiz = JSON.parse(response.body);
+    const params = {
+      id: $("#userid").text(),
+      roomid: $("#roomid").text(),
+      word: quiz.word,
+      correctMean: quiz.correctMean,
+      options: quiz.options.join(','),
+      process: quiz.process
+    };
+    const query = new URLSearchParams(params);
+    window.location.href = `/game?${query.toString()}`;
   });
+
 });
 
 function showMessage(message) {

@@ -11,16 +11,16 @@ function getQueryParam(param) {
 stompClient.connect({}, () => {
   console.log("Connected");
   stompClient.subscribe('/topic/quiz/' + roomId, (response) => {
-    const quiz = JSON.parse(response.body);
+    quiz = JSON.parse(response.body);
     startQuiz(quiz);
   });
-  fetchQuiz();
+  startQuiz(quiz);
 });
 
 function startQuiz(quiz) {
   try {
     result.textContent = '';
-    if (quiz.process >= totalQuestions + 2) {
+    if (quiz.process >= totalQuestions + 1) {
       saveScoreToDatabase(playerName, correctCount);
       document.getElementById('quiz-container').innerHTML = `
             <h2>クイズ終了！</h2>
@@ -64,7 +64,7 @@ async function checkAnswer(selected, correct) {
   console.log(judge);
   if (judge) {
     fetchQuiz();
-  } 
+  }
 }
 
 function fetchQuiz() {
