@@ -47,6 +47,13 @@ function startQuiz(quiz) {
 
 async function checkAnswer(selected, correct) {
   const result = document.getElementById('result');
+  const optionsContainer = document.getElementById('options');
+  const buttons = optionsContainer.getElementsByTagName('button');
+
+  // 全てのボタンを無効化
+  for (let button of buttons) {
+    button.disabled = true;
+  }
 
   if (selected === correct) {
     correctCount += 10; // 1問ごとに10点加算
