@@ -65,6 +65,7 @@ public class PlayerController {
     UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
     int roomid = 1;
     int roomlimit = 2;
+    
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
       roomid++;
     }
@@ -86,8 +87,6 @@ public class PlayerController {
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("id", userInfo.getId());
 
-    // サーバからクライアントにユーザー一覧を送信
-    messagingTemplate.convertAndSend("/topic/roomusers", "reload");
     return "room.html";
   }
 
@@ -95,7 +94,7 @@ public class PlayerController {
   public String showPlayer(@RequestParam("id") int id, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id);
     userInfo.setRoomId(0);
-    userInfoMapper.resetRoomId(userInfo);
+    userInfoMapper.insertRoomId(userInfo);
 
     // モデルにプレイヤー名
     model.addAttribute("playername", userInfo.getUserName());
