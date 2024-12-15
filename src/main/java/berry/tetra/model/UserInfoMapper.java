@@ -12,13 +12,6 @@ import java.util.List;
 
 @Mapper
 public interface UserInfoMapper {
-
-  @Select("SELECT * FROM userinfo WHERE userName = #{userName} AND roomId = #{roomId}")
-  List<UserInfo> selectAllByName(String userName, int roomId);// 引数のusernameかつroomIdが0のUserInfoを全て返す
-
-  @Select("SELECT MAX(roomId) FROM userinfo")
-  int selectMaxRoomId();
-
   @Select("SELECT COUNT(*) FROM userinfo WHERE roomId = #{roomId}")
   int selectCountRoomId(int roomId);
 
@@ -40,9 +33,6 @@ public interface UserInfoMapper {
 
   @Update("UPDATE userinfo SET roomId=#{roomId} WHERE id = #{id}")
   void insertRoomId(UserInfo userInfo);
-
-  @Update("UPDATE userinfo SET roomId = 0 WHERE id = #{id}")
-  void resetRoomId(UserInfo userInfo);
 
   @Update("UPDATE userinfo SET score = #{score} WHERE userName = #{userName}")
   int updateScore(@Param("userName") String userName, @Param("score") int score);

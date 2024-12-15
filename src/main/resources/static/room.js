@@ -1,9 +1,9 @@
 const socket = new SockJS('/websocket');
 const stompClient = Stomp.over(socket);
 
-stompClient.connect({}, () => {
+stompClient.connect({roomid: $("#roomid")}, () => {
   console.log("Connected");
-  stompClient.subscribe('/topic/roomusers', () => {
+  stompClient.subscribe('/topic/room/' + $("#roomid"), (response) => {
     getData();
   });
   stompClient.subscribe('/topic/startGame/' + $("#roomid").text(), async (response) => {
@@ -20,7 +20,6 @@ stompClient.connect({}, () => {
     const query = new URLSearchParams(params);
     window.location.href = `/game?${query.toString()}`;
   });
-
 });
 
 function showMessage(message) {
