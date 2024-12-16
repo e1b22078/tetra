@@ -2,20 +2,29 @@ const totalQuestions = 10; // 合計問題数
 let correctCount = 0; // 正解数（点数として使用）
 const socket = new SockJS('/websocket');
 const stompClient = Stomp.over(socket);
+let roomId = getQueryParam("roomid"); // URLからroomIdを取得
+let quiz = {}; // 問題を格納する変数
 
+// クエリパラメータを取得する関数
 function getQueryParam(param) {
   const params = new URLSearchParams(window.location.search);
   return params.get(param);
 }
 
-stompClient.connect({}, () => {
-  console.log("Connected");
-  stompClient.subscribe('/topic/quiz/' + roomId, (response) => {
-    quiz = JSON.parse(response.body);
-    startQuiz(quiz);
+// WebSocket接続（マルチプレイヤー用）
+if (roomId) {
+  stompClient.connect({}, () => {
+    console.log("Connected");
+    stompClient.subscribe('/topic/quiz/' + roomId, (response) => {
+      quiz = JSON.parse(response.body);
+      startQuiz(quiz);
+    });
+    startQuiz(quiz); // 最初の問題
   });
-  startQuiz(quiz);
-});
+} else {
+  // ソロモードの場合はHTTPリクエストで問題を取得
+  fetchQuiz();
+}
 
 function startQuiz(quiz) {
   try {
@@ -45,6 +54,7 @@ function startQuiz(quiz) {
   }
 }
 
+// 正誤判定を行う関数
 async function checkAnswer(selected, correct) {
   const result = document.getElementById('result');
   const optionsContainer = document.getElementById('options');
@@ -64,22 +74,34 @@ async function checkAnswer(selected, correct) {
     result.style.color = 'red';
   }
 
-  const params = { roomid: roomId };
-  const query = new URLSearchParams(params);
-  const response = await fetch(`/api/quiz/count?${query}`,);
-  const judge = await response.json();
-  console.log(judge);
-  if (judge) {
+  // ソロモードの場合、問題を取得
+  if (!roomId) {
     fetchQuiz();
   }
 }
 
-function fetchQuiz() {
+// クイズを取得する関数
+async function fetchQuiz() {
   const params = { roomid: roomId };
   const query = new URLSearchParams(params);
-  fetch(`/api/quiz?${query}`)
+  const url = roomId ? `/api/quiz?${query}` : `/api/quiz/solo`;  // ソロモードの場合は別のエンドポイントを使う
+
+  try {
+    const response = await fetch(url);
+    if (response.ok) {
+      quiz = await response.json();
+      startQuiz(quiz);
+    } else {
+      console.error('クイズの取得に失敗しました');
+      document.getElementById('quiz-container').innerHTML = 'クイズの取得に失敗しました。';
+    }
+  } catch (error) {
+    console.error('クイズ取得中にエラーが発生しました:', error);
+    document.getElementById('quiz-container').innerHTML = 'エラーが発生しました。リロードしてください。';
+  }
 }
 
+// スコアをデータベースに保存する関数
 async function saveScoreToDatabase(userName, score) {
   try {
     console.log(`送信するデータ:`, { userName, score });

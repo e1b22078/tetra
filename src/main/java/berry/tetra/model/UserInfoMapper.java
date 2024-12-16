@@ -42,4 +42,7 @@ public interface UserInfoMapper {
 
   @Select("SELECT * FROM userinfo WHERE id = #{id}")
   UserInfo selectById(int id);
+
+  @Update("UPDATE userinfo SET roomId = 0 WHERE id = #{id}")
+  void resetRoomId(UserInfo userInfo);
 }

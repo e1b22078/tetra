@@ -81,16 +81,7 @@
   <h1>クイズゲーム</h1>
   <script th:inline="javascript">
     let quiz = /*[[${quiz}]]*/"quiz";
-    const roomId = /*[[${roomid}]]*/"roomid";  // roomIdが0の場合はソロゲーム
     const playerName = /*[[${playername}]]*/"playername";
-
-    if (roomId === 0) {
-      // ソロゲームの場合
-      console.log('ソロゲームを開始: ' + playerName);
-    } else {
-      // マルチプレイヤーゲームの場合
-      console.log('ルームに参加: ' + roomId);
-    }
   </script>
 
   <div id="quiz-container" class="quiz-container">
@@ -101,7 +92,7 @@
     <button id="next-button" onclick="loadNextQuiz()">次の問題</button>
   </div>
   <center>
-    <a th:href="@{/player(id=${id},roomid=${roomid})}">もどる</a>
+    <a th:href="@{/player(id=${id})}">もどる</a>
   </center>
 </body>
 

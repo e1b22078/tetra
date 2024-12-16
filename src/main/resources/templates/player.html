@@ -13,6 +13,7 @@
 <body>
   <h1><span th:if="${playername}">Hello, [[${playername}]]</span></h1>
   <p>プレイヤーID: [[${id}]]</p>
+  <a th:href="@{/sologame(id=${id})}">ゲーム</a><br>
   <a th:href="@{/qmatch(id=${id})}">クイックマッチ</a><br>
   <h2>登録されているユーザー一覧:</h2>
   <table>
