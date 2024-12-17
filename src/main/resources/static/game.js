@@ -1,7 +1,22 @@
 const totalQuestions = 10; // 合計問題数
 let correctCount = 0; // 正解数（点数として使用）
+let quiz = null;
 const socket = new SockJS('/websocket');
 const stompClient = Stomp.over(socket);
+
+const isRealTimeGame = window.location.search.includes("roomid");
+
+if (isRealTimeGame) {
+  stompClient.connect({}, () => {
+    console.log("Connected to WebSocket");
+    stompClient.subscribe('/topic/quiz/' + roomId, (response) => {
+      quiz = JSON.parse(response.body);
+      startQuiz(quiz);
+    });
+  });
+} else {
+  fetchQuiz();
+}
 
 function getQueryParam(param) {
   const params = new URLSearchParams(window.location.search);
@@ -64,20 +79,31 @@ async function checkAnswer(selected, correct) {
     result.style.color = 'red';
   }
 
-  const params = { roomid: roomId };
-  const query = new URLSearchParams(params);
-  const response = await fetch(`/api/quiz/count?${query}`,);
-  const judge = await response.json();
-  console.log(judge);
-  if (judge) {
+  if (isRealTimeGame) {
+    const params = { roomid: roomId };
+    const query = new URLSearchParams(params);
+    const response = await fetch(`/api/quiz/count?${query}`);
+    const judge = await response.json();
+    console.log(judge);
+    if (judge) {
+      fetchQuiz();
+    }
+  } else {
+    // ソロゲームの場合は、次の問題を非同期通信で取得
     fetchQuiz();
   }
 }
 
-function fetchQuiz() {
-  const params = { roomid: roomId };
+async function fetchQuiz() {
+  const params = { roomid: roomId }; // roomidがない場合も、他のAPIと共存できるように
   const query = new URLSearchParams(params);
-  fetch(`/api/quiz?${query}`)
+  const response = await fetch(`/api/quiz?${query}`);
+  if (response.ok) {
+    quiz = await response.json();
+    startQuiz(quiz);
+  } else {
+    console.error('クイズデータの取得に失敗しました');
+  }
 }
 
 async function saveScoreToDatabase(userName, score) {
