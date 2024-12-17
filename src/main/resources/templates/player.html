@@ -13,6 +13,7 @@
 <body>
   <h1><span th:if="${playername}">Hello, [[${playername}]]</span></h1>
   <p>プレイヤーID: [[${id}]]</p>
+  <a th:href="@{/sologame(id=${id})}">ソロモード</a><br>
   <a th:href="@{/qmatch(id=${id})}">クイックマッチ</a><br>
   <h2>登録されているユーザー一覧:</h2>
   <table>
@@ -20,7 +21,7 @@
     </tbody>
   </table>
   <!-- 戻るボタンのリンク修正 -->
-  <a th:href="@{/player(id=${id})}">もどる</a>
+  <a href="/">もどる</a>
 </body>
 
 </html>
