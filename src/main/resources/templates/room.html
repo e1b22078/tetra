@@ -11,8 +11,12 @@
 </head>
 
 <body>
-  <div id="roomid" th:text="${roomid}"></div>
-  <div id="userid" th:text="${id}"></div>
+  <div>
+    <span>ルームID:</span><span id="roomid" th:text="${roomid}"></span>
+  </div>
+  <div>
+    <span>プレイヤーID:</span><span id="userid" th:text="${id}"></span>
+  </div>
   <table>
     <tbody id="message">
     </tbody>
