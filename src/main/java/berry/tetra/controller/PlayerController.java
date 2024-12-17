@@ -60,12 +60,20 @@ public class PlayerController {
     return "player.html";
   }
 
+  @GetMapping("/sologame")
+  public String sologame(@RequestParam("id") int id, Model model){
+    UserInfo userInfo = userInfoMapper.selectById(id);
+    model.addAttribute("playername", userInfo.getUserName());
+    model.addAttribute("id", userInfo.getId());
+    return "soloGame.html";
+  }
+
   @GetMapping("/qmatch")
   public String qmatch(@RequestParam("id") int id, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
     int roomid = 1;
     int roomlimit = 2;
-    
+
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
       roomid++;
     }
