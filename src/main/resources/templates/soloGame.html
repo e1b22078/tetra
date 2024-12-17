@@ -133,7 +133,7 @@
     <button id="next-button" onclick="loadNextQuiz()" style="display:none;">次の問題</button>
   </div>
   <center>
-    <a href="/player" class="back-link">もどる</a>
+    <a th:href="@{/player(id=${id})}">もどる</a>
   </center>
 </body>
 
