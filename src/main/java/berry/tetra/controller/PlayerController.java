@@ -61,7 +61,7 @@ public class PlayerController {
   }
 
   @GetMapping("/sologame")
-  public String sologame(@RequestParam("id") int id, Model model){
+  public String sologame(@RequestParam("id") int id, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id);
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("id", userInfo.getId());
@@ -101,6 +101,15 @@ public class PlayerController {
   @GetMapping("/player")
   public String showPlayer(@RequestParam("id") int id, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id);
+    if (userInfo.getRoomId() != 0) {
+      Room room = roomMapper.selectByRoomId(userInfo.getRoomId());
+      room.setProcess(0);
+      room.setCount(0);
+      room.setRoomSize(room.getRoomSize() - 1);
+      roomMapper.updateProcess(room);
+      roomMapper.updateCount(room);
+      roomMapper.updateRoomSize(room);
+    }
     userInfo.setRoomId(0);
     userInfoMapper.insertRoomId(userInfo);
 
