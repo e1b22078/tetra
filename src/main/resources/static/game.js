@@ -17,8 +17,12 @@ stompClient.connect({}, () => {
   startQuiz(quiz);
 });
 
-function startQuiz(quiz) {
+async function startQuiz(quiz) {
   try {
+    const timeLimit = 12;
+    const quizTimeLimit = 10;
+    let remainingTime = timeLimit;
+    let quizRemainingTime = quizTimeLimit;
     result.textContent = '';
     if (quiz.process >= totalQuestions + 1) {
       saveScoreToDatabase(playerName, correctCount);
@@ -32,6 +36,43 @@ function startQuiz(quiz) {
     document.getElementById('word').textContent = quiz.word;
     const optionsContainer = document.getElementById('options');
     optionsContainer.innerHTML = ''; // 選択肢をクリア
+
+    const quizTimer = setInterval(() => {
+      quizRemainingTime--;
+
+      if (quizRemainingTime <= 0) {
+        clearInterval(quizTimer);
+        for (let button of optionsContainer.getElementsByTagName('button')) {
+          button.disabled = true;
+        }
+        if(result.textContent == ''){
+          result.textContent = `不正解。正解は「${quiz.correctMean}」です。`;
+          result.style.color = 'red';
+        }
+      }
+    }, 1000);
+
+    const polling = () => {
+      remainingTime--;
+
+      setTimeout(async () => {
+        if (remainingTime <= 0) {
+          remainingTime = timeLimit;
+          const params = { roomid: roomId };
+          const query = new URLSearchParams(params);
+          const response = await fetch(`/api/quiz/count?${query}`,);
+          const judge = await response.json();
+          console.log(judge);
+          if (judge) {
+            fetchQuiz();
+          }
+        } else {
+          polling()
+        }
+      }, 1000);
+    }
+
+    polling();
 
     quiz.options.forEach(option => {
       const button = document.createElement('button');
@@ -64,14 +105,6 @@ async function checkAnswer(selected, correct) {
     result.style.color = 'red';
   }
 
-  const params = { roomid: roomId };
-  const query = new URLSearchParams(params);
-  const response = await fetch(`/api/quiz/count?${query}`,);
-  const judge = await response.json();
-  console.log(judge);
-  if (judge) {
-    fetchQuiz();
-  }
 }
 
 function fetchQuiz() {
