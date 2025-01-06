@@ -19,17 +19,14 @@ stompClient.connect({}, () => {
 
 async function startQuiz(quiz) {
   try {
-    const timeLimit = 12;
-    const quizTimeLimit = 10;
+    const timeLimit = 5;
+    const quizTimeLimit = 3;
     let remainingTime = timeLimit;
     let quizRemainingTime = quizTimeLimit;
     result.textContent = '';
     if (quiz.process >= totalQuestions + 1) {
-      saveScoreToDatabase(playerName, correctCount);
-      document.getElementById('quiz-container').innerHTML = `
-            <h2>クイズ終了！</h2>
-            <p>${playerName}の点数は ${correctCount} 点です</p>
-          `;
+      await saveScoreToDatabase(playerName, correctCount);
+      await getWinner();
       return;
     }
     // クイズデータをページに表示
@@ -45,7 +42,7 @@ async function startQuiz(quiz) {
         for (let button of optionsContainer.getElementsByTagName('button')) {
           button.disabled = true;
         }
-        if(result.textContent == ''){
+        if (result.textContent == '') {
           result.textContent = `不正解。正解は「${quiz.correctMean}」です。`;
           result.style.color = 'red';
         }
@@ -131,4 +128,17 @@ async function saveScoreToDatabase(userName, score) {
   } catch (error) {
     console.error('スコア送信中にエラーが発生しました:', error);
   }
+}
+
+async function getWinner() {
+  const params = { roomid: roomId };
+  const query = new URLSearchParams(params);
+  const response = await fetch(`/api/score/judge?${query}`);
+  const winner = await response.text();
+  console.log(winner);
+  document.getElementById('quiz-container').innerHTML = `
+          <h2>クイズ終了！</h2>
+          <p>${playerName}の点数は ${correctCount} 点です</p>
+          <p>${winner}の勝利です</p>
+        `;
 }
