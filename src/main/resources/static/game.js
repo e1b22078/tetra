@@ -19,8 +19,8 @@ stompClient.connect({}, () => {
 
 async function startQuiz(quiz) {
   try {
-    const timeLimit = 5;
-    const quizTimeLimit = 3;
+    const timeLimit = 2;
+    const quizTimeLimit = 1;
     let remainingTime = timeLimit;
     let quizRemainingTime = quizTimeLimit;
     result.textContent = '';
@@ -136,9 +136,13 @@ async function getWinner() {
   const response = await fetch(`/api/score/judge?${query}`);
   const winner = await response.text();
   console.log(winner);
+  result = '<p></p>'
+  if (winner.length != 0) {
+    result = `<p>${winner}の勝利です</p>`;
+  }
   document.getElementById('quiz-container').innerHTML = `
           <h2>クイズ終了！</h2>
           <p>${playerName}の点数は ${correctCount} 点です</p>
-          <p>${winner}の勝利です</p>
+          ${result}
         `;
 }
