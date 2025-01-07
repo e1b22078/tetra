@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
-
 @Mapper
 public interface RoomMapper {
   @Select("SELECT * FROM room WHERE roomId = #{roomId}")
@@ -17,12 +16,6 @@ public interface RoomMapper {
   @Insert("INSERT INTO room (roomId, process, count, roomSize) VALUES (#{roomId}, #{process}, #{count}, #{roomSize});")
   void insertRoom(Room room);
 
-  @Update("UPDATE room SET process=#{process} WHERE roomId = #{roomId}")
-  void updateProcess(Room room);
-
-  @Update("UPDATE room SET count=#{count} WHERE roomId = #{roomId}")
-  void updateCount(Room room);
-
-  @Update("UPDATE room SET roomSize=#{roomSize} WHERE roomId = #{roomId}")
-  void updateRoomSize(Room room);
+  @Update("UPDATE room SET process=#{process}, count=#{count}, roomSize=#{roomSize} WHERE roomId = #{roomId}")
+  void updateRoom(Room room);
 }

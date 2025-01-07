@@ -39,13 +39,13 @@ public class ScoreController {
   public String judgeScore(@RequestParam("roomid") int roomId) {
     List<UserInfo> users = userInfoMapper.selectAllByRoomId(roomId);
     List<UserInfo> highestScoreUsers = new ArrayList<>();
-    int highestScore = Integer.MIN_VALUE;
+    int highestScore = 0;
     for (UserInfo user : users) {
       if (user.getScore() > highestScore) {
         highestScore = user.getScore();
         highestScoreUsers.clear();
         highestScoreUsers.add(user);
-      } else if (user.getScore() == highestScore) {
+      } else if (user.getScore() == highestScore && user.getScore() != 0) {
         highestScoreUsers.add(user);
       }
     }

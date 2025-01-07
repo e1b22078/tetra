@@ -32,27 +32,27 @@ public class QuizController {
    */
   @GetMapping
   public void getQuiz(@RequestParam("roomid") int roomId) {
-    QuizQuestion quiz= quizService.generateQuiz();
+    QuizQuestion quiz = quizService.generateQuiz();
     Room room = roomMapper.selectByRoomId(roomId);
     int process = room.getProcess() + 1;
     room.setProcess(process);
-    roomMapper.updateProcess(room);
+    roomMapper.updateRoom(room);
     quiz.setProcess(process);
     messagingTemplate.convertAndSend("/topic/quiz/" + roomId, quiz);
   }
 
   @GetMapping("/count")
   public boolean setFailCount(@RequestParam("roomid") int roomId) {
+    boolean result = false;
     Room room = roomMapper.selectByRoomId(roomId);
 
     room.setCount(room.getCount() + 1);
     System.out.println(room.getCount());
-    if(room.getCount() == room.getRoomSize()) {
+    if (room.getCount() == room.getRoomSize()) {
       room.setCount(0);
-      roomMapper.updateCount(room);
-      return true;
+      result = true;
     }
-    roomMapper.updateCount(room);
-    return false;
+    roomMapper.updateRoom(room);
+    return result;
   }
 }
