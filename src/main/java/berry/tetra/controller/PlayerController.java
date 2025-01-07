@@ -72,7 +72,7 @@ public class PlayerController {
   public String qmatch(@RequestParam("id") int id, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id); // id でユーザー情報を取得
     int roomid = 1;
-    int roomlimit = 2;
+    int roomlimit = 3;
 
     while (userInfoMapper.selectCountRoomId(roomid) == roomlimit) {
       roomid++;
@@ -87,7 +87,7 @@ public class PlayerController {
     } else {
       Room room = roomMapper.selectByRoomId(roomid);
       room.setRoomSize(room.getRoomSize() + 1);
-      roomMapper.updateRoomSize(room);
+      roomMapper.updateRoom(room);
     }
     userInfo.setRoomId(roomid);
     userInfoMapper.insertRoomId(userInfo);
@@ -106,9 +106,7 @@ public class PlayerController {
       room.setProcess(0);
       room.setCount(0);
       room.setRoomSize(room.getRoomSize() - 1);
-      roomMapper.updateProcess(room);
-      roomMapper.updateCount(room);
-      roomMapper.updateRoomSize(room);
+      roomMapper.updateRoom(room);
     }
     userInfo.setRoomId(0);
     userInfoMapper.insertRoomId(userInfo);
@@ -123,7 +121,7 @@ public class PlayerController {
   @GetMapping("/game")
   public String game(@RequestParam("id") int id, @RequestParam("roomid") int roomId,
       @RequestParam("word") String word, @RequestParam("correctMean") String correctMean,
-      @RequestParam List<String> options, @RequestParam int process, Model model) {
+      @RequestParam List<String> options, Model model) {
 
     UserInfo userInfo = userInfoMapper.selectById(id);
     model.addAttribute("playername", userInfo.getUserName());
@@ -139,7 +137,7 @@ public class PlayerController {
     Room room = roomMapper.selectByRoomId(roomId);
     int process = room.getProcess() + 1;
     room.setProcess(process);
-    roomMapper.updateProcess(room);
+    roomMapper.updateRoom(room);
     quiz.setProcess(process);
     messagingTemplate.convertAndSend("/topic/startGame/" + roomId, quiz);
   }

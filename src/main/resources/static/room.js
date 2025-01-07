@@ -1,7 +1,7 @@
 const socket = new SockJS('/websocket');
 const stompClient = Stomp.over(socket);
 
-stompClient.connect({roomid: $("#roomid")}, () => {
+stompClient.connect({ roomid: $("#roomid") }, () => {
   console.log("Connected");
   stompClient.subscribe('/topic/room/' + $("#roomid"), (response) => {
     getData();
@@ -42,6 +42,13 @@ function getData() {
     .then(result => { showMessage(result) });
 }
 
+function init() {
+  const roomid = $("#roomid").text();
+  window.location.href = `/init?roomid=${roomid}`;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  const button = document.getElementById('init');
+  button.setAttribute('onclick', 'init()');
   getData();
 });
