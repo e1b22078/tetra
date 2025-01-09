@@ -3,18 +3,13 @@ let correctCount = 0; // 正解数（点数として使用）
 const socket = new SockJS('/websocket');
 const stompClient = Stomp.over(socket);
 
-function getQueryParam(param) {
-  const params = new URLSearchParams(window.location.search);
-  return params.get(param);
-}
-
-stompClient.connect({}, () => {
+stompClient.connect({}, async () => {
   console.log("Connected");
   stompClient.subscribe('/topic/quiz/' + roomId, (response) => {
-    quiz = JSON.parse(response.body);
+    const quiz = JSON.parse(response.body);
     startQuiz(quiz);
   });
-  startQuiz(quiz);
+  judge();
 });
 
 async function startQuiz(quiz) {
@@ -55,14 +50,7 @@ async function startQuiz(quiz) {
       setTimeout(async () => {
         if (remainingTime <= 0) {
           remainingTime = timeLimit;
-          const params = { roomid: roomId };
-          const query = new URLSearchParams(params);
-          const response = await fetch(`/api/quiz/count?${query}`,);
-          const judge = await response.json();
-          console.log(judge);
-          if (judge) {
-            fetchQuiz();
-          }
+          await judge();
         } else {
           polling()
         }
@@ -83,7 +71,18 @@ async function startQuiz(quiz) {
   }
 }
 
-async function checkAnswer(selected, correct) {
+async function judge() {
+  const params = { roomId: roomId };
+  const query = new URLSearchParams(params);
+  const response = await fetch(`/api/quiz/count?${query}`,);
+  const result = await response.json();
+  console.log(result);
+  if (result) {
+    fetchQuiz();
+  }
+}
+
+function checkAnswer(selected, correct) {
   const result = document.getElementById('result');
   const optionsContainer = document.getElementById('options');
   const buttons = optionsContainer.getElementsByTagName('button');
@@ -105,7 +104,7 @@ async function checkAnswer(selected, correct) {
 }
 
 function fetchQuiz() {
-  const params = { roomid: roomId };
+  const params = { roomId: roomId };
   const query = new URLSearchParams(params);
   fetch(`/api/quiz?${query}`)
 }
@@ -131,7 +130,7 @@ async function saveScoreToDatabase(userName, score) {
 }
 
 async function getWinner() {
-  const params = { roomid: roomId };
+  const params = { roomId: roomId };
   const query = new URLSearchParams(params);
   const response = await fetch(`/api/score/judge?${query}`);
   const winner = await response.text();

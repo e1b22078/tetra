@@ -24,7 +24,7 @@ public class UserController {
   }
 
   @GetMapping("room")
-  public List<UserInfo> getUserInfoByRoomId(@RequestParam("roomid") int roomId) {
+  public List<UserInfo> getUserInfoByRoomId(@RequestParam("roomId") int roomId) {
     return userInfoMapper.selectAllByRoomId(roomId);
   }
 

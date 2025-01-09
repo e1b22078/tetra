@@ -80,8 +80,8 @@
 <body>
   <h1>クイズゲーム</h1>
   <script th:inline="javascript">
-    let quiz = /*[[${quiz}]]*/"quiz";
-    const roomId = /*[[${roomid}]]*/"roomid";
+    const roomId = /*[[${roomId}]]*/"roomId";
+    const id = /*[[${id}]]*/"id";
     const playerName = /*[[${playername}]]*/"playername";
   </script>
 
@@ -93,7 +93,7 @@
     <button id="next-button" onclick="loadNextQuiz()">次の問題</button>
   </div>
   <center>
-    <a th:href="@{/player(id=${id},roomid=${roomid})}">もどる</a>
+    <a th:href="@{/player(id=${id},roomId=${roomId})}">もどる</a>
   </center>
 </body>
 
