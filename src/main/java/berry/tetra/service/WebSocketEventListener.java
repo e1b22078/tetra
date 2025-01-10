@@ -21,21 +21,32 @@ public class WebSocketEventListener {
   @Autowired
   private SimpMessagingTemplate messagingTemplate;
 
-  private final Map<String, Integer> groupConnections = new ConcurrentHashMap<>();
-  private final Map<String, String> sessionGroupMap = new ConcurrentHashMap<>();
+  private final Map<String, Integer> roomConnections = new ConcurrentHashMap<>();
+  private final Map<String, String> sessionRoomMap = new ConcurrentHashMap<>();
+  private final Map<String, Integer> playerConnections = new ConcurrentHashMap<>();
+  private final Map<String, String> sessionPlayerMap = new ConcurrentHashMap<>();
 
   @EventListener
   public void handleWebSocketConnectListener(SessionConnectEvent event) {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessionId = headerAccessor.getSessionId();
     String roomId = headerAccessor.getFirstNativeHeader("roomId");
+    String userId = headerAccessor.getFirstNativeHeader("userId");
 
     if (sessionId != null && roomId != null) {
-      sessionGroupMap.put(sessionId, roomId);
+      sessionRoomMap.put(sessionId, roomId);
 
-      groupConnections.merge(roomId, 1, Integer::sum);
+      roomConnections.merge(roomId, 1, Integer::sum);
 
-      notifyGroupConnectionCount(roomId);
+      notifyRoomConnectionCount(roomId);
+    }
+
+    if (sessionId != null && userId != null) {
+      sessionPlayerMap.put(sessionId, userId);
+
+      playerConnections.merge(userId, 1, Integer::sum);
+
+      notifyPlayerConnectionCount(userId);
     }
   }
 
@@ -44,17 +55,30 @@ public class WebSocketEventListener {
     StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
     String sessionId = headerAccessor.getSessionId();
 
-    if (sessionId != null && sessionGroupMap.containsKey(sessionId)) {
-      String roomId = sessionGroupMap.remove(sessionId);
+    if (sessionId != null && sessionRoomMap.containsKey(sessionId)) {
+      String roomId = sessionRoomMap.remove(sessionId);
 
-      groupConnections.merge(roomId, -1, (oldVal, val) -> Math.max(oldVal + val, 0));
+      roomConnections.merge(roomId, -1, (oldVal, val) -> Math.max(oldVal + val, 0));
 
-      notifyGroupConnectionCount(roomId);
+      notifyRoomConnectionCount(roomId);
+    }
+
+    if (sessionId != null && sessionPlayerMap.containsKey(sessionId)) {
+      String userId = sessionPlayerMap.remove(sessionId);
+
+      roomConnections.merge(userId, -1, (oldVal, val) -> Math.max(oldVal + val, 0));
+
+      notifyPlayerConnectionCount(userId);
     }
   }
 
-  private void notifyGroupConnectionCount(String roomId) {
-    int count = groupConnections.getOrDefault(roomId, 0);
+  private void notifyRoomConnectionCount(String roomId) {
+    int count = roomConnections.getOrDefault(roomId, 0);
     messagingTemplate.convertAndSend("/topic/room/" + roomId, count);
+  }
+
+  private void notifyPlayerConnectionCount(String userId) {
+    int count = roomConnections.getOrDefault(userId, 0);
+    messagingTemplate.convertAndSend("/topic/users/", count);
   }
 }

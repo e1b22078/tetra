@@ -5,11 +5,11 @@ const stompClient = Stomp.over(socket);
 
 stompClient.connect({}, async () => {
   console.log("Connected");
-  stompClient.subscribe('/topic/quiz/' + roomId, (response) => {
+  stompClient.subscribe('/topic/quiz/' + roomId, async (response) => {
     const quiz = JSON.parse(response.body);
-    startQuiz(quiz);
+    await startQuiz(quiz);
   });
-  judge();
+  await ready();
 });
 
 async function startQuiz(quiz) {
@@ -50,9 +50,9 @@ async function startQuiz(quiz) {
       setTimeout(async () => {
         if (remainingTime <= 0) {
           remainingTime = timeLimit;
-          await judge();
+          await ready();
         } else {
-          polling()
+          polling();
         }
       }, 1000);
     }
@@ -71,14 +71,14 @@ async function startQuiz(quiz) {
   }
 }
 
-async function judge() {
+async function ready() {
   const params = { roomId: roomId };
   const query = new URLSearchParams(params);
   const response = await fetch(`/api/quiz/count?${query}`,);
   const result = await response.json();
   console.log(result);
   if (result) {
-    fetchQuiz();
+    await fetchQuiz();
   }
 }
 
@@ -103,10 +103,10 @@ function checkAnswer(selected, correct) {
 
 }
 
-function fetchQuiz() {
+async function fetchQuiz() {
   const params = { roomId: roomId };
   const query = new URLSearchParams(params);
-  fetch(`/api/quiz?${query}`)
+  await fetch(`/api/quiz?${query}`);
 }
 
 async function saveScoreToDatabase(userName, score) {

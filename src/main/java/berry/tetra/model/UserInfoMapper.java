@@ -18,9 +18,6 @@ public interface UserInfoMapper {
   @Select("SELECT * FROM userinfo WHERE roomId = #{roomId}")
   List<UserInfo> selectAllByRoomId(int roomId);
 
-  @Select("SELECT roomId FROM userinfo WHERE userName = #{userName}")
-  int selectRoomId(String userName);
-
   @Select("SELECT * FROM userinfo")
   List<UserInfo> selectAllUsers();// すべてのユーザーを返すメソッド
 

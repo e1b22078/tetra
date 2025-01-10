@@ -42,9 +42,6 @@ public class PlayerController {
     model.addAttribute("playername", playername);
     model.addAttribute("id", id);
 
-    // サーバからクライアントにユーザー一覧を送信
-    messagingTemplate.convertAndSend("/topic/users", userInfoMapper.selectAllUsers());
-
     return "player.html";
   }
 
@@ -60,7 +57,7 @@ public class PlayerController {
   public String qmatch(@RequestParam("id") int id, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id);
     int roomId = 1;
-    int roomlimit = 3;
+    int roomlimit = 2;
 
     while (userInfoMapper.selectCountRoomId(roomId) == roomlimit) {
       roomId++;

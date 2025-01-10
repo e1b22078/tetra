@@ -6,7 +6,7 @@ stompClient.connect({ roomId: $("#roomId") }, () => {
   stompClient.subscribe('/topic/room/' + $("#roomId"), (response) => {
     getData();
   });
-  stompClient.subscribe('/topic/startGame/' + $("#roomId").text(), (response) => {
+  stompClient.subscribe('/topic/startGame/' + $("#roomId"), (response) => {
     const params = {
       id: $("#userid").text(),
       roomId: $("#roomId").text()
