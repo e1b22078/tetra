@@ -36,11 +36,15 @@ public class PlayerController {
   public String player(@RequestParam("playername") String playername, Model model) {
     UserInfo userInfo = new UserInfo();
     userInfo.setUserName(playername);
+    userInfo.setActive(0);
     userInfoMapper.insertUserInfo(userInfo);
     int id = userInfo.getId();
 
     model.addAttribute("playername", playername);
     model.addAttribute("id", id);
+    model.addAttribute("count", userInfoMapper.selectAllUsers().size());
+
+    messagingTemplate.convertAndSend("/topic/users/", userInfoMapper.selectAllUsers().size());
 
     return "player.html";
   }
@@ -59,9 +63,11 @@ public class PlayerController {
     int roomId = 1;
     int roomlimit = 2;
 
-    while (userInfoMapper.selectCountRoomId(roomId) == roomlimit) {
+    while (userInfoMapper.selectCountRoomId(roomId) == roomlimit
+        || userInfoMapper.selectActiveCountRoomId(roomId) != 0) {
       roomId++;
     }
+
     if (roomMapper.selectCountRoomId(roomId) == 0) {
       Room room = new Room();
       room.setRoomId(roomId);
@@ -84,10 +90,11 @@ public class PlayerController {
   }
 
   @GetMapping("/player")
-  public String showPlayer(@RequestParam("id") int id, Model model) {
+  public String showPlayer(@RequestParam("id") int id,
+      @RequestParam(value = "roomId", required = false, defaultValue = "0") int roomId, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id);
-    if (userInfo.getRoomId() != 0) {
-      Room room = roomMapper.selectByRoomId(userInfo.getRoomId());
+    if (roomId != 0) {
+      Room room = roomMapper.selectByRoomId(roomId);
       room.setProcess(0);
       room.setCount(0);
       room.setRoomSize(room.getRoomSize() - 1);
@@ -95,10 +102,13 @@ public class PlayerController {
     }
     userInfo.setRoomId(0);
     userInfoMapper.insertRoomId(userInfo);
+    userInfo.setActive(0);
+    userInfoMapper.activate(userInfo);
 
     // モデルにプレイヤー名
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("id", userInfo.getId());
+    model.addAttribute("count", userInfoMapper.selectAllUsers().size());
 
     return "player.html";
   }
@@ -106,6 +116,8 @@ public class PlayerController {
   @GetMapping("/game")
   public String game(@RequestParam("id") int id, @RequestParam("roomId") int roomId, Model model) {
     UserInfo userInfo = userInfoMapper.selectById(id);
+    userInfo.setActive(1);
+    userInfoMapper.activate(userInfo);
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("roomId", roomId);
     model.addAttribute("id", id);

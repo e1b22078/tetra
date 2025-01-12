@@ -3,7 +3,8 @@ CREATE TABLE userinfo (
     userName VARCHAR NOT NULL,
     roomId INT NOT NULL,
     score INT,
-    rank INT
+    rank INT,
+    active INT
 );
 CREATE TABLE word (
     id IDENTITY,

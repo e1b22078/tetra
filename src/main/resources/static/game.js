@@ -5,6 +5,7 @@ const stompClient = Stomp.over(socket);
 
 stompClient.connect({}, async () => {
   console.log("Connected");
+  document.getElementById('return').style.display = 'none'
   stompClient.subscribe('/topic/quiz/' + roomId, async (response) => {
     const quiz = JSON.parse(response.body);
     await startQuiz(quiz);
@@ -16,8 +17,10 @@ async function startQuiz(quiz) {
   try {
     const timeLimit = 2;
     const quizTimeLimit = 1;
+    const disconnectTimeLimit = 5;
     let remainingTime = timeLimit;
     let quizRemainingTime = quizTimeLimit;
+    let disconnectRemainingTime = disconnectTimeLimit;
     result.textContent = '';
     if (quiz.process >= totalQuestions + 1) {
       await saveScoreToDatabase(playerName, correctCount);
@@ -41,6 +44,18 @@ async function startQuiz(quiz) {
           result.textContent = `不正解。正解は「${quiz.correctMean}」です。`;
           result.style.color = 'red';
         }
+      }
+    }, 1000);
+
+    const disconnect = setInterval(() => {
+      disconnectRemainingTime--;
+
+      if (disconnectRemainingTime <= 0) {
+        const params = {
+          roomId: roomId
+        };
+        const query = new URLSearchParams(params);
+        window.location.href = `/reset?${query.toString()}`;
       }
     }, 1000);
 
@@ -144,4 +159,5 @@ async function getWinner() {
           <p>${playerName}の点数は ${correctCount} 点です</p>
           ${result}
         `;
+  document.getElementById('return').style.display = 'block';
 }
