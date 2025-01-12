@@ -113,8 +113,9 @@ public class PlayerController {
   }
 
   @GetMapping("/init")
-  public void init(@RequestParam("roomId") int roomId) {
+  public String init(@RequestParam("roomId") int roomId) {
     messagingTemplate.convertAndSend("/topic/startGame/" + roomId, "");
+    return "init.html";
   }
 
   @GetMapping("/ranking")
