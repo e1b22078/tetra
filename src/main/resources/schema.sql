@@ -3,6 +3,7 @@ CREATE TABLE userinfo (
     userName VARCHAR NOT NULL,
     roomId INT NOT NULL,
     score INT,
+    tempscore INT,
     rank INT,
     active INT
 );

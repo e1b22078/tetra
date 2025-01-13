@@ -10,8 +10,8 @@ public class ScoreService {
   private UserInfoMapper userInfoMapper;
 
   // スコアを更新するメソッド
-  public boolean updateScore(String userName, int score) {
-    int updatedRows = userInfoMapper.updateScore(userName, score);
+  public boolean updateScore(int id, int score) {
+    int updatedRows = userInfoMapper.updateScore(id, score);
     return updatedRows > 0; // 更新が成功したかどうかを返す
   }
 }

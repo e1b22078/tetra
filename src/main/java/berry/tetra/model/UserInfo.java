@@ -5,6 +5,7 @@ public class UserInfo {
   String userName;
   int roomId;
   int score;
+  int tempscore;
   int rank;
   int active;
 
@@ -38,6 +39,14 @@ public class UserInfo {
 
   public void setScore(int score) {
     this.score = score;
+  }
+
+  public int getTempScore() {
+    return tempscore;
+  }
+
+  public void setTempScore(int tempscore) {
+    this.tempscore = tempscore;
   }
 
   public int getRank() {

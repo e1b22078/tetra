@@ -26,13 +26,19 @@ public class ScoreController {
 
   @PostMapping
   public String saveScore(@RequestBody UserInfo userInfo) {
-    boolean isUpdated = scoreService.updateScore(userInfo.getUserName(), userInfo.getScore());
-
-    if (isUpdated) {
-      return "スコアが正常に更新されました";
+    userInfo.setTempScore(userInfo.getScore());
+    userInfoMapper.updateTempScore(userInfo.getId(), userInfo.getScore());
+    if (userInfo.getScore() > userInfoMapper.selectById(userInfo.getId()).getScore()) {
+      boolean isUpdated = scoreService.updateScore(userInfo.getId(), userInfo.getScore());
+      if (isUpdated) {
+        return "スコアが正常に更新されました";
+      } else {
+        return "ユーザーが存在しないため、スコアの更新に失敗しました";
+      }
     } else {
-      return "ユーザーが存在しないため、スコアの更新に失敗しました";
+      return "スコアは更新されませんでした";
     }
+
   }
 
   @GetMapping("/judge")
@@ -41,11 +47,11 @@ public class ScoreController {
     List<UserInfo> highestScoreUsers = new ArrayList<>();
     int highestScore = 0;
     for (UserInfo user : users) {
-      if (user.getScore() > highestScore) {
-        highestScore = user.getScore();
+      if (user.getTempScore() > highestScore) {
+        highestScore = user.getTempScore();
         highestScoreUsers.clear();
         highestScoreUsers.add(user);
-      } else if (user.getScore() == highestScore && user.getScore() != 0) {
+      } else if (user.getTempScore() == highestScore && user.getTempScore() != 0) {
         highestScoreUsers.add(user);
       }
     }

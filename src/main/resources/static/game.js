@@ -15,13 +15,13 @@ stompClient.connect({}, () => {
 
 async function startQuiz(quiz) {
   try {
-    const timeLimit = 2;
-    const quizTimeLimit = 1;
+    const timeLimit = 12;
+    const quizTimeLimit = 10;
     let remainingTime = timeLimit;
     let quizRemainingTime = quizTimeLimit;
     result.textContent = '';
     if (quiz.process >= totalQuestions + 1) {
-      await saveScoreToDatabase(playerName, correctCount);
+      await saveScoreToDatabase(id, correctCount);
       await getWinner();
       return;
     }
@@ -110,15 +110,15 @@ function fetchQuiz() {
   fetch(`/api/quiz?${query}`);
 }
 
-async function saveScoreToDatabase(userName, score) {
+async function saveScoreToDatabase(id, score) {
   try {
-    console.log(`送信するデータ:`, { userName, score });
+    console.log(`送信するデータ:`, { id, score });
     const response = await fetch('/api/score', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ userName, score }),
+      body: JSON.stringify({ id, score }),
     });
     if (!response.ok) {
       throw new Error('スコアの保存に失敗しました');
