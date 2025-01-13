@@ -3,24 +3,22 @@ let correctCount = 0; // 正解数（点数として使用）
 const socket = new SockJS('/websocket');
 const stompClient = Stomp.over(socket);
 
-stompClient.connect({}, async () => {
+stompClient.connect({}, () => {
   console.log("Connected");
   document.getElementById('return').style.display = 'none'
   stompClient.subscribe('/topic/quiz/' + roomId, async (response) => {
     const quiz = JSON.parse(response.body);
-    await startQuiz(quiz);
+    startQuiz(quiz);
   });
-  await ready();
+  ready();
 });
 
 async function startQuiz(quiz) {
   try {
     const timeLimit = 2;
     const quizTimeLimit = 1;
-    const disconnectTimeLimit = 5;
     let remainingTime = timeLimit;
     let quizRemainingTime = quizTimeLimit;
-    let disconnectRemainingTime = disconnectTimeLimit;
     result.textContent = '';
     if (quiz.process >= totalQuestions + 1) {
       await saveScoreToDatabase(playerName, correctCount);
@@ -47,25 +45,13 @@ async function startQuiz(quiz) {
       }
     }, 1000);
 
-    const disconnect = setInterval(() => {
-      disconnectRemainingTime--;
-
-      if (disconnectRemainingTime <= 0) {
-        const params = {
-          roomId: roomId
-        };
-        const query = new URLSearchParams(params);
-        window.location.href = `/reset?${query.toString()}`;
-      }
-    }, 1000);
-
     const polling = () => {
       remainingTime--;
 
       setTimeout(async () => {
         if (remainingTime <= 0) {
           remainingTime = timeLimit;
-          await ready();
+          ready();
         } else {
           polling();
         }
@@ -93,7 +79,7 @@ async function ready() {
   const result = await response.json();
   console.log(result);
   if (result) {
-    await fetchQuiz();
+    fetchQuiz();
   }
 }
 
@@ -118,10 +104,10 @@ function checkAnswer(selected, correct) {
 
 }
 
-async function fetchQuiz() {
+function fetchQuiz() {
   const params = { roomId: roomId };
   const query = new URLSearchParams(params);
-  await fetch(`/api/quiz?${query}`);
+  fetch(`/api/quiz?${query}`);
 }
 
 async function saveScoreToDatabase(userName, score) {
