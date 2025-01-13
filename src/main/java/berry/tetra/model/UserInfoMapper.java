@@ -37,8 +37,11 @@ public interface UserInfoMapper {
   @Update("UPDATE userinfo SET active=#{active} WHERE id = #{id}")
   void activate(UserInfo userInfo);
 
-  @Update("UPDATE userinfo SET score = #{score} WHERE userName = #{userName}")
-  int updateScore(@Param("userName") String userName, @Param("score") int score);
+  @Update("UPDATE userinfo SET score = #{score} WHERE id = #{id}")
+  int updateScore(@Param("id") int id, @Param("score") int score);
+
+  @Update("UPDATE userinfo SET tempscore = #{tempscore} WHERE id = #{id}")
+  int updateTempScore(@Param("id") int id, @Param("tempscore") int tempscore);
 
   @Delete("DELETE FROM userinfo WHERE id = #{id}")
   void deleteUserById(int id);
