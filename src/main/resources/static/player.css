@@ -27,6 +27,7 @@ p {
   margin: 10px 0;
 }
 
+
 /* リンクのスタイル */
 a {
   display: block;
@@ -42,36 +43,22 @@ a:hover {
   text-decoration: underline;
 }
 
-/* ユーザー一覧テーブル */
 table {
-  width: 80%;
-  margin-top: 30px;
+  width: 100%;
   border-collapse: collapse;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  margin-top: 20px;
+}
+
+table,
+th,
+td {
+  border: 1px solid black;
 }
 
 th,
 td {
-  padding: 12px;
-  text-align: center;
-  border: 1px solid #ccc;
-}
-
-th {
-  background-color: #0078d7;
-  color: white;
-}
-
-td {
-  background-color: #f9f9f9;
-}
-
-td:hover {
-  background-color: #f0f0f0;
-}
-
-#message {
-  font-size: 14px;
+  padding: 8px 12px;
+  text-align: left;
 }
 
 /* 戻るボタンのスタイル */

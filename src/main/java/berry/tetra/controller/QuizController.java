@@ -47,7 +47,6 @@ public class QuizController {
     Room room = roomMapper.selectByRoomId(roomId);
 
     room.setCount(room.getCount() + 1);
-    System.out.println(room.getCount());
     if (room.getCount() == room.getRoomSize()) {
       room.setCount(0);
       result = true;
