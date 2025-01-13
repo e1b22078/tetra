@@ -18,6 +18,22 @@
   <a th:href="@{/qmatch(id=${id})}">クイックマッチ</a><br>
   <h2>登録ユーザー数:</h2>
   <div id="message" th:text="${count}"></div>
+  <table>
+    <thead>
+      <tr>
+        <th>順位</th>
+        <th>ユーザー名</th>
+        <th>スコア</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr th:each="user : ${users}">
+        <td th:text="${user.rank}"></td>
+        <td th:text="${user.userName}"></td>
+        <td th:text="${user.score}"></td>
+      </tr>
+    </tbody>
+  </table>
   <!-- 戻るボタンのリンク修正 -->
   <a href="/">もどる</a>
 </body>

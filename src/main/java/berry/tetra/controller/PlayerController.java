@@ -43,6 +43,7 @@ public class PlayerController {
     model.addAttribute("playername", playername);
     model.addAttribute("id", id);
     model.addAttribute("count", userInfoMapper.selectAllUsers().size());
+    model.addAttribute("users", userInfoMapper.selectAllRanking());
 
     messagingTemplate.convertAndSend("/topic/users/", userInfoMapper.selectAllUsers().size());
 
@@ -109,6 +110,7 @@ public class PlayerController {
     model.addAttribute("playername", userInfo.getUserName());
     model.addAttribute("id", userInfo.getId());
     model.addAttribute("count", userInfoMapper.selectAllUsers().size());
+    model.addAttribute("users", userInfoMapper.selectAllRanking());
 
     return "player.html";
   }
