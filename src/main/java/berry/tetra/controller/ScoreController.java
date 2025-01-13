@@ -36,7 +36,7 @@ public class ScoreController {
   }
 
   @GetMapping("/judge")
-  public String judgeScore(@RequestParam("roomid") int roomId) {
+  public String judgeScore(@RequestParam("roomId") int roomId) {
     List<UserInfo> users = userInfoMapper.selectAllByRoomId(roomId);
     List<UserInfo> highestScoreUsers = new ArrayList<>();
     int highestScore = 0;

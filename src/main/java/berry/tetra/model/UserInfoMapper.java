@@ -12,14 +12,14 @@ import java.util.List;
 
 @Mapper
 public interface UserInfoMapper {
-  @Select("SELECT COUNT(*) FROM userinfo WHERE roomId = #{roomId}")
+  @Select("SELECT COUNT(*) FROM userinfo WHERE roomId = #{roomId} AND active = 0")
   int selectCountRoomId(int roomId);
+
+  @Select("SELECT COUNT(*) FROM userinfo WHERE roomId = #{roomId} AND active = 1")
+  int selectActiveCountRoomId(int roomId);
 
   @Select("SELECT * FROM userinfo WHERE roomId = #{roomId}")
   List<UserInfo> selectAllByRoomId(int roomId);
-
-  @Select("SELECT roomId FROM userinfo WHERE userName = #{userName}")
-  int selectRoomId(String userName);
 
   @Select("SELECT * FROM userinfo")
   List<UserInfo> selectAllUsers();// すべてのユーザーを返すメソッド
@@ -27,12 +27,15 @@ public interface UserInfoMapper {
   @Select("SELECT userName, score, RANK() OVER (ORDER BY score DESC) AS rank FROM userInfo ORDER BY rank LIMIT 5")
   List<UserInfo> selectAllRanking();
 
-  @Insert("INSERT INTO userinfo (userName, roomId) VALUES (#{userName}, #{roomId});")
+  @Insert("INSERT INTO userinfo (userName, roomId, active) VALUES (#{userName}, #{roomId}, #{active});")
   @Options(useGeneratedKeys = true, keyColumn = "id", keyProperty = "id")
   void insertUserInfo(UserInfo userInfo);
 
   @Update("UPDATE userinfo SET roomId=#{roomId} WHERE id = #{id}")
   void insertRoomId(UserInfo userInfo);
+
+  @Update("UPDATE userinfo SET active=#{active} WHERE id = #{id}")
+  void activate(UserInfo userInfo);
 
   @Update("UPDATE userinfo SET score = #{score} WHERE userName = #{userName}")
   int updateScore(@Param("userName") String userName, @Param("score") int score);

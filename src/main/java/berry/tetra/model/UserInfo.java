@@ -6,6 +6,7 @@ public class UserInfo {
   int roomId;
   int score;
   int rank;
+  int active;
 
   public int getRoomId() {
     return roomId;
@@ -45,5 +46,13 @@ public class UserInfo {
 
   public void setRank(int rank) {
     this.rank = rank;
+  }
+
+  public int getActive() {
+    return active;
+  }
+
+  public void setActive(int active) {
+    this.active = active;
   }
 }

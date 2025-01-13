@@ -3,18 +3,12 @@ const stompClient = Stomp.over(socket);
 
 stompClient.connect({}, () => {
   console.log("Connected");
-  stompClient.subscribe('/topic/users', (response) => {
+  stompClient.subscribe('/topic/users/', (response) => {
+    console.log(response.body);
     showMessage(JSON.parse(response.body));
   });
 });
 
 function showMessage(message) {
-  $("#message").html("");
-  for (var i in message) {
-    $("#message").append("<tr><td>" + message[i]["userName"] + "</td></tr>")
-  }
+  $("#message").html(`<span>${message}</span>`);
 }
-
-fetch('/api/user')
-  .then(response => response.json())
-  .then(result => showMessage(result));

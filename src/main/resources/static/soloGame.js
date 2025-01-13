@@ -2,7 +2,7 @@ let currentQuestion = 0; // 現在の問題数
 let totalQuestions = 0; // ユーザーが選択した問題数
 let correctCount = 0; // 正解数
 
-function startQuiz() {
+async function startQuiz() {
   // ユーザーが選択した問題数を取得
   const questionCountSelect = document.getElementById('question-count');
   totalQuestions = parseInt(questionCountSelect.value, 10);
@@ -12,7 +12,7 @@ function startQuiz() {
   document.getElementById('quiz-container').style.display = 'block';
 
   // 最初のクイズを取得
-  fetchQuiz();
+  await fetchQuiz();
 }
 
 async function fetchQuiz() {
@@ -62,7 +62,7 @@ function checkAnswer(selected, correct) {
   }
 }
 
-function loadNextQuiz() {
+async function loadNextQuiz() {
   const result = document.getElementById('result');
   const nextButton = document.getElementById('next-button');
 
@@ -74,7 +74,7 @@ function loadNextQuiz() {
   // 次の問題
   result.textContent = '';
   nextButton.style.display = 'none';
-  fetchQuiz();
+  await fetchQuiz();
 }
 
 function showResults() {

@@ -31,7 +31,7 @@ public class QuizController {
    * @return QuizQuestion クイズデータ
    */
   @GetMapping
-  public void getQuiz(@RequestParam("roomid") int roomId) {
+  public void getQuiz(@RequestParam("roomId") int roomId) {
     QuizQuestion quiz = quizService.generateQuiz();
     Room room = roomMapper.selectByRoomId(roomId);
     int process = room.getProcess() + 1;
@@ -42,7 +42,7 @@ public class QuizController {
   }
 
   @GetMapping("/count")
-  public boolean setFailCount(@RequestParam("roomid") int roomId) {
+  public boolean setFailCount(@RequestParam("roomId") int roomId) {
     boolean result = false;
     Room room = roomMapper.selectByRoomId(roomId);
 

@@ -13,17 +13,17 @@
 
 <body>
   <div>
-    <span>ルームID:</span><span id="roomid" th:text="${roomid}"></span>
+    <span>ルームID:</span><span id="roomId" th:text="${roomId}"></span>
   </div>
   <div>
-    <span>プレイヤーID:</span><span id="userid" th:text="${id}"></span>
+    <span>プレイヤーID:</span><span id="userId" th:text="${id}"></span>
   </div>
   <table>
     <tbody id="message">
     </tbody>
   </table>
   <button id="init">ゲームスタート</button>
-  <a th:href="@{/player(id=${id}, roomid=${roomid})}">もどる</a>
+  <a th:href="@{/player(id=${id}, roomId=${roomId})}">もどる</a>
 </body>
 
 </html>
